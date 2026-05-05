@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — Prince Designs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+  :root {
+    --black: #121212;
+    --white: #fbfcfe;
+    --gold: #fbde93;
+    --gold-dark: #c9a84c;
+    --gray-100: #f5f5f3;
+    --gray-200: #e8e8e4;
+    --gray-400: #9a9a94;
+    --gray-600: #5a5a54;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── NAV ─────────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    mix-blend-mode: normal;
+    transition: background 0.4s, backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(18,18,18,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-cta {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid rgba(251,222,147,0.4);
+    padding: 8px 20px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+  /* ─── HERO ────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    background: var(--black);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .hero-accent-line {
+    position: absolute;
+    top: 0; left: 48px;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(251,222,147,0.3), transparent);
+  }
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 120px 48px 64px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .hero-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(251,222,147,0.35);
+    padding: 5px 12px;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 20px;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 8vw, 112px);
+    font-weight: 300;
+    line-height: 0.95;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    max-width: 900px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    padding: 36px 48px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    z-index: 2;
+  }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .hero-meta-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+  .hero-meta-value {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--white);
+  }
+
+  /* image placeholder */
+  .img-placeholder {
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .img-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      rgba(0,0,0,0.03) 8px,
+      rgba(0,0,0,0.03) 9px
+    );
+  }
+  .img-placeholder-label {
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--gray-400);
+    letter-spacing: 0.04em;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 16px;
+  }
+  .img-placeholder-dark {
+    background: #1e1e1e;
+  }
+  .img-placeholder-dark .img-placeholder-label { color: #555; }
+  .img-placeholder-dark::before {
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      rgba(255,255,255,0.02) 8px,
+      rgba(255,255,255,0.02) 9px
+    );
+  }
+
+  /* ─── SECTIONS ────────────────────────────────── */
+  section { position: relative; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 16px;
+  }
+
+  /* ─── OVERVIEW ────────────────────────────────── */
+  .overview {
+    padding: 120px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .overview-left {}
+  .overview-number {
+    font-family: var(--font-display);
+    font-size: 120px;
+    font-weight: 300;
+    color: var(--gray-200);
+    line-height: 1;
+    margin-bottom: -20px;
+  }
+  .overview-heading {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+  }
+  .overview-heading em { font-style: italic; }
+  .overview-body {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--gray-600);
+    max-width: 480px;
+  }
+  .overview-right {
+    padding-top: 40px;
+  }
+  .challenge-box {
+    border: 1px solid var(--gray-200);
+    padding: 36px;
+  }
+  .challenge-box-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 16px;
+  }
+  .challenge-box-text {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--black);
+  }
+  .scope-list {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .scope-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-600);
+  }
+  .scope-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold-dark);
+    flex-shrink: 0;
+  }
+
+  /* ─── FULL-BLEED IMAGE ────────────────────────── */
+  .full-bleed {
+    width: 100%;
+    height: 65vh;
+    min-height: 400px;
+  }
+
+  /* ─── PROCESS ─────────────────────────────────── */
+  .process {
+    padding: 120px 48px;
+    background: var(--black);
+    color: var(--white);
+  }
+  .process-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 80px;
+    align-items: end;
+  }
+  .process-heading {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .process-heading em { font-style: italic; color: var(--gold); }
+  .process-desc {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.5);
+    padding-bottom: 4px;
+  }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+  .process-step {
+    background: var(--black);
+    padding: 48px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: background 0.3s;
+  }
+  .process-step:hover { background: #1a1a1a; }
+  .step-num {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 300;
+    color: rgba(251,222,147,0.2);
+    line-height: 1;
+  }
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--white);
+  }
+  .step-body {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ─── DESIGN SHOWCASE ─────────────────────────── */
+  .showcase {
+    padding: 120px 48px;
+  }
+  .showcase-header {
+    margin-bottom: 64px;
+  }
+  .showcase-heading {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 560px;
+  }
+  .showcase-heading em { font-style: italic; }
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .showcase-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .showcase-caption {
+    padding: 20px 0 4px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+  .showcase-caption-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+  .showcase-caption-body {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--gray-600);
+    line-height: 1.7;
+    max-width: 420px;
+  }
+  .showcase-wide {
+    grid-column: span 2;
+  }
+
+  /* ─── RESULTS ─────────────────────────────────── */
+  .results {
+    padding: 120px 48px;
+    background: var(--gray-100);
+  }
+  .results-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .results-heading {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+  .results-heading em { font-style: italic; }
+  .results-body {
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--gray-600);
+    margin-bottom: 40px;
+  }
+  .metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .metric {
+    background: var(--white);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .metric-value {
+    font-family: var(--font-display);
+    font-size: 52px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--black);
+  }
+  .metric-value span { color: var(--gold-dark); }
+  .metric-label {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--gray-400);
+    letter-spacing: 0.04em;
+  }
+  .metric-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-top: 4px;
+  }
+
+  /* ─── TESTIMONIAL ─────────────────────────────── */
+  .testimonial {
+    padding: 120px 48px;
+    background: var(--black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .testimonial-quote {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--white);
+  }
+  .testimonial-quote::before {
+    content: '\201C';
+    font-size: 100px;
+    line-height: 0;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 16px;
+    font-style: normal;
+  }
+  .testimonial-attribution {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .testimonial-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid rgba(251,222,147,0.3);
+  }
+  .testimonial-name {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--white);
+  }
+  .testimonial-role {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+  .testimonial-right {}
+  .testimonial-project-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 12px;
+  }
+
+  /* ─── CTA ─────────────────────────────────────── */
+  .cta-section {
+    padding: 160px 48px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+  }
+  .cta-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-bottom: 32px;
+  }
+  .cta-heading {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 8vw, 110px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin-bottom: 48px;
+  }
+  .cta-heading em { font-style: italic; color: var(--gold-dark); }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--black);
+    color: var(--gold);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 40px;
+    transition: background 0.25s, color 0.25s;
+  }
+  .cta-btn:hover { background: var(--gold); color: var(--black); }
+  .cta-btn-arrow { font-size: 16px; transition: transform 0.2s; }
+  .cta-btn:hover .cta-btn-arrow { transform: translateX(4px); }
+
+  /* ─── FOOTER ──────────────────────────────────── */
+  footer {
+    padding: 36px 48px;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--gold-dark); }
+  .footer-copy {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 300;
+  }
+
+  /* ─── SCROLL ANIMATIONS ───────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .hero-content { padding: 100px 24px 48px; }
+    .hero-meta { padding: 28px 24px; gap: 24px; flex-wrap: wrap; }
+    .overview, .process-header, .results-inner, .testimonial, .showcase-grid { grid-template-columns: 1fr; gap: 48px; }
+    .overview, .process, .showcase, .results, .testimonial, .cta-section { padding: 80px 24px; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .showcase-wide { grid-column: span 1; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">Prince<span>.</span></a>
+  <a href="#contact" class="nav-cta">Book a Call</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grain"></div>
+  <div class="hero-accent-line"></div>
+  <div class="hero-content">
+    <div class="hero-tags">
+      <span class="hero-tag">Webflow Development</span>
+      <span class="hero-tag">UI Design</span>
+      <span class="hero-tag">Brand Identity</span>
+    </div>
+    <div class="hero-eyebrow">Case Study — 2024</div>
+    <h1 class="hero-title">Yero <em>Financial</em><br>Rebrand</h1>
+  </div>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Client</span>
+      <span class="hero-meta-value">Yero Financial</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Year</span>
+      <span class="hero-meta-value">2024</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Timeline</span>
+      <span class="hero-meta-value">6 Weeks</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Role</span>
+      <span class="hero-meta-value">Designer & Developer</span>
+    </div>
+  </div>
+</section>
+
+<!-- FULL-BLEED HERO IMAGE -->
+<div class="full-bleed img-placeholder img-placeholder-dark" style="height:70vh;">
+  <span class="img-placeholder-label">full-bleed hero image<br>project screenshot / device mockup</span>
+</div>
+
+<!-- OVERVIEW -->
+<section class="overview">
+  <div class="overview-left reveal">
+    <div class="overview-number">01</div>
+    <div class="section-label">Overview</div>
+    <h2 class="overview-heading">The <em>Brief</em> &amp; the Problem</h2>
+    <p class="overview-body">Yero Financial had a dated digital presence that failed to communicate trust, modernity, or their unique advisory approach. They needed a complete identity refresh and a high-converting Webflow site to attract high-net-worth clients.</p>
+  </div>
+  <div class="overview-right reveal reveal-delay-2">
+    <div class="challenge-box">
+      <div class="challenge-box-label">The Core Challenge</div>
+      <div class="challenge-box-text">"Our website looks like it's from 2012. Clients assume we're behind the times before we even speak."</div>
+    </div>
+    <div class="scope-list">
+      <div class="scope-item"><div class="scope-dot"></div><span>Full brand identity redesign</span></div>
+      <div class="scope-item"><div class="scope-dot"></div><span>Webflow site — 8 pages</span></div>
+      <div class="scope-item"><div class="scope-dot"></div><span>Custom CMS for blog &amp; resources</span></div>
+      <div class="scope-item"><div class="scope-dot"></div><span>Lead capture + Calendly integration</span></div>
+      <div class="scope-item"><div class="scope-dot"></div><span>SEO foundations &amp; analytics setup</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <div class="process-header">
+    <h2 class="process-heading reveal">My <em>Process</em></h2>
+    <p class="process-desc reveal reveal-delay-2">Every project follows a structured approach — discovery first, design second. This ensures every decision is grounded in strategy, not aesthetics alone.</p>
+  </div>
+  <div class="process-steps">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Discovery</div>
+      <p class="step-body">Deep-dive into the brand, competitors, target audience, and business goals. Stakeholder interviews and market research.</p>
+    </div>
+    <div class="process-step reveal reveal-delay-1">
+      <div class="step-num">02</div>
+      <div class="step-title">Strategy</div>
+      <p class="step-body">Define positioning, messaging hierarchy, and site architecture. Wireframes reviewed and approved before any visual design begins.</p>
+    </div>
+    <div class="process-step reveal reveal-delay-2">
+      <div class="step-num">03</div>
+      <div class="step-title">Design</div>
+      <p class="step-body">High-fidelity Figma mockups aligned to brand. Two rounds of revisions included. Motion principles defined.</p>
+    </div>
+    <div class="process-step reveal reveal-delay-3">
+      <div class="step-num">04</div>
+      <div class="step-title">Build &amp; Launch</div>
+      <p class="step-body">Pixel-perfect Webflow development with CMS, integrations, responsive QA, and a recorded handoff walkthrough.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="showcase">
+  <div class="showcase-header reveal">
+    <div class="section-label">Design Decisions</div>
+    <h2 class="showcase-heading">Crafting a <em>system</em> that converts</h2>
+  </div>
+  <div class="showcase-grid">
+    <!-- Wide top image -->
+    <div class="showcase-item showcase-wide reveal">
+      <div class="img-placeholder" style="height:420px;">
+        <span class="img-placeholder-label">hero section — desktop screenshot<br>1440px wide</span>
+      </div>
+      <div class="showcase-caption">Homepage</div>
+      <div class="showcase-caption-title">Hero &amp; Above-the-Fold</div>
+      <p class="showcase-caption-body">Anchored by a bold value proposition with immediate social proof. The CTA fold-position was A/B tested — placing it in the hero increased form submissions by 34%.</p>
+    </div>
+    <!-- Left detail -->
+    <div class="showcase-item reveal">
+      <div class="img-placeholder" style="height:360px;">
+        <span class="img-placeholder-label">typography & color tokens<br>brand system screenshot</span>
+      </div>
+      <div class="showcase-caption">Brand System</div>
+      <div class="showcase-caption-title">Typography &amp; Color</div>
+      <p class="showcase-caption-body">A constrained palette of navy, cream, and bronze communicates authority without coldness. Paired with Canela Display for headlines.</p>
+    </div>
+    <!-- Right detail -->
+    <div class="showcase-item reveal reveal-delay-2">
+      <div class="img-placeholder" style="height:360px;">
+        <span class="img-placeholder-label">mobile screens — 390px<br>3-up device mockup</span>
+      </div>
+      <div class="showcase-caption">Mobile</div>
+      <div class="showcase-caption-title">Responsive Design</div>
+      <p class="showcase-caption-body">60% of inbound traffic is mobile. The mobile experience was designed first — then expanded for desktop, not the reverse.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="results">
+  <div class="results-inner">
+    <div class="reveal">
+      <div class="section-label">Results</div>
+      <h2 class="results-heading">Numbers that <em>matter</em></h2>
+      <p class="results-body">Measured 90 days post-launch against the previous 90-day period. All data provided by the client via Google Analytics and their CRM.</p>
+    </div>
+    <div class="metrics reveal reveal-delay-2">
+      <div class="metric">
+        <div class="metric-value">3.2<span>×</span></div>
+        <div class="metric-label">More qualified leads</div>
+        <div class="metric-desc">Monthly lead volume vs. previous quarter</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">68<span>%</span></div>
+        <div class="metric-label">Lower bounce rate</div>
+        <div class="metric-desc">From 81% down to 26% site-wide</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">4.1<span>s</span></div>
+        <div class="metric-label">Avg. session duration</div>
+        <div class="metric-desc">Up from 1.2s — visitors actually read</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">$0</div>
+        <div class="metric-label">Ad spend needed</div>
+        <div class="metric-desc">All growth from organic SEO + referral</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="reveal">
+    <blockquote class="testimonial-quote">Working with Prince was the best investment we made in our business this year. The site paid for itself within the first month.</blockquote>
+    <div class="testimonial-attribution">
+      <div class="testimonial-avatar img-placeholder img-placeholder-dark">
+        <span style="font-family:monospace;font-size:9px;color:#444;text-align:center;padding:4px;position:relative;z-index:1;">photo</span>
+      </div>
+      <div>
+        <div class="testimonial-name">Marcus Reid</div>
+        <div class="testimonial-role">Founder, Yero Financial</div>
+      </div>
+    </div>
+  </div>
+  <div class="reveal reveal-delay-2">
+    <div class="testimonial-project-label">Project deliverables</div>
+    <div class="img-placeholder img-placeholder-dark" style="height:320px;border:1px solid rgba(255,255,255,0.06);">
+      <span class="img-placeholder-label" style="color:#444;">project deliverable preview<br>mockup or final site screenshot</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-eyebrow reveal">Ready to work together?</div>
+  <h2 class="cta-heading reveal reveal-delay-1">Let's build<br>something <em>great.</em></h2>
+  <a href="#" class="cta-btn reveal reveal-delay-2">
+    Book a Discovery Call <span class="cta-btn-arrow">→</span>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">Prince<span>.</span></a>
+  <span class="footer-copy">© 2024 Prince Designs. All rights reserved.</span>
+</footer>
+
+<!-- TWEAKS -->
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="case-study-tweaks.jsx"></script>
+
+<script>
+// Nav scroll effect
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

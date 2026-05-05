@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renesource — Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0e0e0e;
+    --white: #fbfcfe;
+    --gold: #fbde93;
+    --gold-dark: #c9a84c;
+    --gray-100: #f4f4f1;
+    --gray-200: #e6e6e1;
+    --gray-300: #d2d2cc;
+    --gray-400: #9a9a94;
+    --gray-600: #5a5a54;
+    --font-display: 'Syne', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--black);
+    color: var(--white);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Corner brackets — wireframe-style */
+  .corner-bracket {
+    position: fixed;
+    width: 18px; height: 18px;
+    z-index: 90;
+    pointer-events: none;
+  }
+  .corner-bracket svg { width: 100%; height: 100%; }
+  .corner-tl { top: 16px; left: 16px; }
+  .corner-tr { top: 16px; right: 16px; transform: scaleX(-1); }
+  .corner-bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+  .corner-br { bottom: 16px; right: 16px; transform: scale(-1,-1); }
+
+  /* Top bar */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 56px;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .topbar a { pointer-events: auto; }
+  .topbar-logo {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-logo::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--gold-dark);
+  }
+  .topbar-link {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .topbar-link:hover { color: var(--gold); opacity: 1; }
+  .topbar.dark-mode .topbar-link { color: var(--white); }
+  .topbar.light-mode .topbar-link { color: var(--black); }
+  .topbar.light-mode .topbar-logo { color: var(--black); }
+  .topbar.light-mode .topbar-logo::before { background: var(--gold-dark); }
+
+  /* ─── HERO / QUESTION ────────────────────────── */
+  .hero {
+    padding: 130px 56px 96px;
+    background: var(--black);
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    position: relative;
+    padding-top: 16px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .hero-question {
+    font-family: var(--font-display);
+    font-size: clamp(40px, 5.2vw, 76px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    max-width: 1060px;
+    text-wrap: pretty;
+  }
+  .hero-question em { font-style: normal; color: var(--gold); font-weight: 800; }
+
+  /* Pillars row */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, max-content) 1fr;
+    gap: 64px;
+    align-items: center;
+    margin-top: 56px;
+    padding-bottom: 36px;
+  }
+  .pillar { display: flex; gap: 14px; align-items: flex-start; }
+  .pillar-icon {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(251,222,147,0.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pillar-icon svg { width: 20px; height: 20px; stroke: var(--gold); fill: none; stroke-width: 1.2; }
+  .pillar-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+  }
+  .pillar-sub {
+    font-size: 11px;
+    color: var(--gray-400);
+    line-height: 1.5;
+  }
+  .visit-link {
+    justify-self: end;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dark);
+    padding-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .visit-link:hover { color: var(--white); }
+
+  /* Full-bleed hero image */
+  .full-bleed-img {
+    margin: 0;
+    height: 60vh;
+    min-height: 420px;
+    background: #111;
+    position: relative;
+    overflow: hidden;
+  }
+  .full-bleed-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 60%;
+    display: block;
+    opacity: 0.85;
+  }
+  .full-bleed-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(14,14,14,0.3) 0%, transparent 30%, transparent 70%, rgba(14,14,14,0.5) 100%);
+    pointer-events: none;
+  }
+  .full-bleed-img-label {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-family: monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  /* ─── TESTIMONIAL ────────────────────────────── */
+  .testimonial-block {
+    padding: 80px 56px 96px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .testimonial-quote-wrap { position: relative; padding-top: 24px; }
+  .quote-bracket {
+    font-family: var(--font-display);
+    font-size: 88px;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 0;
+    position: absolute;
+    top: 36px; left: 0;
+  }
+  .testimonial-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-left: 48px;
+  }
+  .tl-line {
+    height: 12px;
+    background: var(--gray-300);
+    opacity: 0.55;
+  }
+  .tl-line.w-95 { width: 95%; }
+  .tl-line.w-88 { width: 88%; }
+  .tl-line.w-72 { width: 72%; }
+  .tl-line.w-40 { width: 40%; }
+  .testimonial-author {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding-top: 36px;
+  }
+  .author-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .author-avatar svg { width: 22px; height: 22px; stroke: var(--gray-400); fill: none; stroke-width: 1.2; }
+  .author-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--white);
+    font-weight: 600;
+  }
+  .author-role {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+  .work-together {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dark);
+    padding-bottom: 4px;
+  }
+
+  /* ─── LIGHT THEME SWITCH ─────────────────────── */
+  .light {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  /* ─── OVERVIEW (sticky left, images right) ───── */
+  .overview {
+    background: var(--gray-100);
+    padding: 96px 56px;
+    position: relative;
+  }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .overview-left {
+    position: sticky;
+    top: 80px;
+  }
+  .overview-label {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 20px;
+    padding-top: 14px;
+    position: relative;
+  }
+  .overview-label::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .overview-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--gray-600);
+    margin-bottom: 32px;
+  }
+  .overview-meta {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    row-gap: 14px;
+    column-gap: 16px;
+    border-top: 1px solid var(--gray-300);
+    padding-top: 20px;
+  }
+  .om-key {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gray-400);
+    padding-top: 2px;
+  }
+  .om-val {
+    font-size: 14px;
+    color: var(--black);
+    font-weight: 400;
+  }
+  .overview-images {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    align-items: flex-end;
+  }
+  .browser-frame {
+    width: 100%;
+    max-width: 620px;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    overflow: hidden;
+  }
+  .browser-frame.offset {
+    margin-right: 0;
+    width: 88%;
+    transform: translateY(-30px);
+    margin-left: auto;
+  }
+  .browser-bar {
+    height: 28px;
+    background: var(--gray-200);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+    border-bottom: 1px solid var(--gray-300);
+  }
+  .browser-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+  }
+  .browser-bar-line {
+    flex: 1;
+    height: 12px;
+    background: var(--white);
+    margin-left: 14px;
+    border: 1px solid var(--gray-300);
+  }
+  .browser-body {
+    height: 280px;
+    background: var(--gray-100);
+    position: relative;
+    overflow: hidden;
+  }
+  .browser-body::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px)),
+                linear-gradient(45deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+
+  /* ─── CHALLENGE (phone left, text right) ─────── */
+  .challenge {
+    background: var(--white);
+    padding: 96px 56px;
+  }
+  .challenge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .phone-wrap { display: flex; justify-content: center; }
+  .phone-frame {
+    width: 220px; height: 440px;
+    border: 1.5px solid var(--gray-400);
+    border-radius: 32px;
+    padding: 14px 10px;
+    background: var(--white);
+    position: relative;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 70px; height: 18px;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: 12px;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: var(--gray-100);
+    border-radius: 20px;
+    margin-top: 20px;
+    height: calc(100% - 28px);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px;
+    gap: 8px;
+  }
+  .ps-line {
+    height: 6px;
+    background: var(--gray-300);
+    border-radius: 2px;
+  }
+  .ps-line.short { width: 50%; }
+  .ps-line.med { width: 75%; }
+  .ps-block {
+    height: 70px;
+    background: var(--gray-300);
+    border-radius: 4px;
+    margin: 8px 0;
+    opacity: 0.7;
+  }
+  .ps-line.tall { height: 8px; background: var(--gray-400); width: 60%; margin-top: 6px; }
+  .challenge-content {}
+  .challenge-eyebrow {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 22px;
+    position: relative;
+    padding-top: 14px;
+  }
+  .challenge-eyebrow::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .challenge-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--gray-600);
+    margin-bottom: 28px;
+    max-width: 540px;
+  }
+  .challenge-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .challenge-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--black);
+    line-height: 1.6;
+  }
+  .challenge-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold-dark);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ─── PROCESS SLIDER ─────────────────────────── */
+  .process {
+    background: var(--gray-100);
+    padding: 96px 0 96px 56px;
+    overflow: hidden;
+  }
+  .process-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-right: 56px;
+  }
+  .process-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    position: relative;
+    padding-top: 14px;
+  }
+  .process-title::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .process-controls { display: flex; gap: 8px; }
+  .process-btn {
+    width: 38px; height: 38px;
+    border: 1px solid var(--gray-400);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    color: var(--black);
+  }
+  .process-btn:hover { background: var(--black); color: var(--gold); border-color: var(--black); }
+  .process-btn svg { width: 14px; height: 14px; }
+
+  .process-track {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    will-change: transform;
+  }
+  .process-card {
+    flex: 0 0 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .process-card-img {
+    height: 180px;
+    background: var(--gray-200);
+    border: 1px solid var(--gray-300);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .process-card-img svg {
+    width: 56px; height: 56px;
+    stroke: var(--gray-400);
+    fill: none;
+    stroke-width: 1.2;
+  }
+  .process-card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg, transparent, transparent 10px,
+      rgba(0,0,0,0.025) 10px, rgba(0,0,0,0.025) 11px
+    );
+  }
+  .process-step-num {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    font-weight: 500;
+  }
+  .process-card-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.2;
+  }
+  .process-card-body {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--gray-600);
+  }
+
+  /* ─── RESULTS ────────────────────────────────── */
+  .results {
+    background: var(--white);
+    padding: 96px 56px;
+  }
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .results-left {}
+  .results-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 22px;
+    position: relative;
+    padding-top: 14px;
+  }
+  .results-title::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .results-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--gray-600);
+    margin-bottom: 24px;
+    max-width: 460px;
+  }
+  .results-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .results-list li {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--black);
+  }
+  .results-list li::before {
+    content: '';
+    width: 16px; height: 1px;
+    background: var(--gold-dark);
+    margin-top: 11px;
+    flex-shrink: 0;
+  }
+  .results-image {
+    height: 360px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    position: relative;
+    overflow: hidden;
+  }
+  .results-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px)),
+                linear-gradient(45deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+
+  /* ─── FINAL CTA / OUTCOME ────────────────────── */
+  .outcome {
+    background: var(--white);
+    padding: 0 56px 96px;
+  }
+  .outcome-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .outcome-image {
+    height: 380px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    position: relative;
+    overflow: hidden;
+  }
+  .outcome-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px)),
+                linear-gradient(45deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+  .outcome-content {}
+  .outcome-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .outcome-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--black);
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .outcome-title em { font-style: normal; color: var(--gold-dark); }
+  .outcome-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--gray-600);
+    margin-bottom: 28px;
+    max-width: 480px;
+  }
+  .outcome-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .outcome-bullets li {
+    display: flex;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--black);
+    align-items: flex-start;
+  }
+  .outcome-bullets li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold-dark);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .outcome-author {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding-top: 28px;
+    border-top: 1px solid var(--gray-300);
+  }
+  .outcome-author .author-avatar {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+  }
+  .outcome-author .author-avatar svg { stroke: var(--gray-400); }
+  .outcome-author .author-name { color: var(--black); }
+
+  /* footer brackets row */
+  .end-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 56px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-200);
+  }
+  .end-row-icons {
+    display: flex;
+    gap: 20px;
+  }
+  .end-icon {
+    width: 26px; height: 26px;
+    border: 1px solid var(--gray-300);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .end-icon svg {
+    width: 12px; height: 12px;
+    stroke: var(--gray-400);
+    fill: none;
+    stroke-width: 1.2;
+  }
+
+  @media (max-width: 900px) {
+    .topbar, .hero, .testimonial-block, .overview, .challenge, .results, .outcome, .end-row { padding-left: 24px; padding-right: 24px; }
+    .full-bleed-img { margin-left: 24px; margin-right: 24px; }
+    .pillars { grid-template-columns: 1fr; gap: 20px; }
+    .visit-link { justify-self: start; }
+    .testimonial-block, .overview-grid, .challenge-grid, .results-grid, .outcome-grid { grid-template-columns: 1fr; gap: 48px; }
+    .overview-left { position: static; }
+    .process { padding-left: 24px; }
+    .process-header { padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Corner brackets -->
+<div class="corner-bracket corner-tl"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+<div class="corner-bracket corner-tr"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+<div class="corner-bracket corner-bl"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+<div class="corner-bracket corner-br"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+
+<!-- Top bar -->
+<div class="topbar dark-mode" id="topbar">
+  <a href="#" class="topbar-logo">Renesource</a>
+  <a href="#contact" class="topbar-link">Free Consultation</a>
+</div>
+
+<!-- HERO / Question -->
+<section class="hero">
+  <div class="hero-eyebrow">Renesource — Case Study</div>
+  <h1 class="hero-question">
+    How did renewable energy<br>
+    consultants <em>visually prove</em> they<br>
+    were one of the best nationwide?
+  </h1>
+</section>
+
+<!-- Full-bleed hero image -->
+<div class="full-bleed-img">
+  <img src="uploads/c1951b8d-fe75-479e-bdfa-2413c6e7cd25.png" alt="Renesource aerial solar project" />
+</div>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-block">
+  <div class="testimonial-quote-wrap">
+    <span class="quote-bracket">"</span>
+    <div class="testimonial-lines">
+      <div class="tl-line w-95"></div>
+      <div class="tl-line w-88"></div>
+      <div class="tl-line w-72"></div>
+      <div class="tl-line w-40"></div>
+    </div>
+  </div>
+  <div>
+    <div class="testimonial-author">
+      <div class="author-avatar">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </div>
+      <div>
+        <div class="author-name">Client Name</div>
+        <div class="author-role">Title, Renesource</div>
+      </div>
+      <a href="#" class="work-together">Let's work together →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LIGHT THEME BEGINS ─── -->
+
+<!-- OVERVIEW -->
+<section class="overview light">
+  <div class="overview-grid">
+    <div class="overview-left">
+      <h2 class="overview-label">Overview</h2>
+      <p class="overview-text">Renesource had strong expertise, a solid reputation, and renewable energy experience across the Philippines, but their outdated website hid that value behind walls of text. The redesign focused on visibility, clarity, and lead generation.</p>
+      <div class="overview-meta">
+        <div class="om-key">P.O.C</div><div class="om-val">Founder / Client</div>
+        <div class="om-key">Industry</div><div class="om-val">Renewable Energy</div>
+        <div class="om-key">Tools</div><div class="om-val">Webflow, CMS, SEO, UX/UI</div>
+      </div>
+    </div>
+    <div class="overview-images">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+          <span class="browser-bar-line"></span>
+        </div>
+        <div class="browser-body"></div>
+      </div>
+      <div class="browser-frame offset">
+        <div class="browser-bar">
+          <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+          <span class="browser-bar-line"></span>
+        </div>
+        <div class="browser-body"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGE -->
+<section class="challenge light">
+  <div class="challenge-grid">
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="ps-line med"></div>
+          <div class="ps-line short"></div>
+          <div class="ps-block"></div>
+          <div class="ps-line tall"></div>
+          <div class="ps-line med"></div>
+          <div class="ps-line"></div>
+          <div class="ps-line short"></div>
+          <div class="ps-block"></div>
+          <div class="ps-line med"></div>
+        </div>
+      </div>
+    </div>
+    <div class="challenge-content">
+      <h2 class="challenge-eyebrow">Challenge</h2>
+      <p class="challenge-text">Renesource already had some of the biggest renewable energy projects in the nation and powerful expertise to back it up. But that value was buried behind dense text and an outdated web experience.</p>
+      <ul class="challenge-list">
+        <li>Information was hard to scan and trust</li>
+        <li>Project value and impact weren't visible early</li>
+        <li>Lead paths were unclear and fragmented</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS SLIDER -->
+<section class="process light">
+  <div class="process-header">
+    <h2 class="process-title">Our Process</h2>
+    <div class="process-controls">
+      <button class="process-btn" id="prev-btn" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="process-btn" id="next-btn" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="process-track" id="process-track">
+    <div class="process-card">
+      <div class="process-card-img">
+        <svg viewBox="0 0 24 24"><path d="M14 2v6h6M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>
+      </div>
+      <div class="process-step-num">01</div>
+      <div class="process-card-title">Discovery</div>
+      <p class="process-card-body">Notes, sketches, solution mapping. Captured priorities live with the client to define the scope.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+      <div class="process-step-num">02</div>
+      <div class="process-card-title">Research</div>
+      <p class="process-card-body">Competitor audit, target client interviews, persona building. Every UX call traces back here.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="14" rx="1"/><path d="M3 17h18M9 21h6"/></svg>
+      </div>
+      <div class="process-step-num">03</div>
+      <div class="process-card-title">Prototype Design</div>
+      <p class="process-card-body">Dense content translated into visual sections. Animated globe + impact numbers anchor the home.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+      </div>
+      <div class="process-step-num">04</div>
+      <div class="process-card-title">Asset Requests</div>
+      <p class="process-card-body">Project photos, team info, drone footage, impact numbers. Integrated as they came in.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img">
+        <svg viewBox="0 0 24 24"><path d="M3 12l2-2 4 4 8-8 4 4"/><path d="M3 18h18"/></svg>
+      </div>
+      <div class="process-step-num">05</div>
+      <div class="process-card-title">Content, SEO &amp; Development</div>
+      <p class="process-card-body">Webflow build, SEO copy, calculator and icons. Custom dev directed end-to-end.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+      </div>
+      <div class="process-step-num">06</div>
+      <div class="process-card-title">Launch</div>
+      <p class="process-card-body">Animated globe, real footage, lead magnet, MyGo Solar — shipped, indexed, and converting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="results light">
+  <div class="results-grid">
+    <div class="results-left">
+      <h2 class="results-title">Results</h2>
+      <p class="results-text">The redesign made Renesource's expertise easier to understand, easier to trust, and easier to act on. Projects, impact, and credibility became visible early in the experience.</p>
+      <ul class="results-list">
+        <li>Project showcases became clearer</li>
+        <li>Impact was surfaced visually</li>
+        <li>Lead paths were easier to follow</li>
+        <li>The site felt more credible and future-proof</li>
+      </ul>
+    </div>
+    <div class="results-image">
+      <span class="full-bleed-img-label" style="color:rgba(0,0,0,0.3);">// final homepage screenshot</span>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOME / Final CTA -->
+<section class="outcome light" id="contact">
+  <div class="outcome-grid">
+    <div class="outcome-image">
+      <span class="full-bleed-img-label" style="color:rgba(0,0,0,0.3);">// final section image / mockup</span>
+    </div>
+    <div class="outcome-content">
+      <div class="outcome-eyebrow">Outcome</div>
+      <h2 class="outcome-title">From Challenge to<br><em>Clearer Digital Presence</em></h2>
+      <p class="outcome-body">By combining research, UX structure, stronger visuals, and SEO-informed content, the new case-study-driven website helped Renesource present itself like the nationwide player it already was.</p>
+      <ul class="outcome-bullets">
+        <li>Stronger proof of work and impact</li>
+        <li>Clearer path to inquiry and engagement</li>
+        <li>Future-ready platform that grows with the brand</li>
+      </ul>
+      <div class="outcome-author">
+        <div class="author-avatar">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <div>
+          <div class="author-name">Client Name</div>
+          <div class="author-role">Title, Renesource</div>
+        </div>
+        <a href="#" class="work-together">Let's work together →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- End row with little icons -->
+<div class="end-row">
+  <span style="font-size:10px;color:var(--gray-400);letter-spacing:0.14em;text-transform:uppercase;">© Renesource Case Study</span>
+  <div class="end-row-icons">
+    <span class="end-icon"><svg viewBox="0 0 14 14"><path d="M2 2L12 12M12 2L2 12"/></svg></span>
+    <span class="end-icon"><svg viewBox="0 0 14 14"><path d="M2 2L12 12M12 2L2 12"/></svg></span>
+    <span class="end-icon"><svg viewBox="0 0 14 14"><path d="M2 2L12 12M12 2L2 12"/></svg></span>
+  </div>
+</div>
+
+<script>
+// Topbar theme switching based on which section is in view
+const topbar = document.getElementById('topbar');
+const lightSections = document.querySelectorAll('.light');
+const checkTheme = () => {
+  const triggerY = 80;
+  let inLight = false;
+  lightSections.forEach(s => {
+    const r = s.getBoundingClientRect();
+    if (r.top <= triggerY && r.bottom >= triggerY) inLight = true;
+  });
+  topbar.classList.toggle('light-mode', inLight);
+  topbar.classList.toggle('dark-mode', !inLight);
+};
+window.addEventListener('scroll', checkTheme, { passive: true });
+checkTheme();
+
+// Process slider
+const track = document.getElementById('process-track');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+let idx = 0;
+const cardWidth = 280 + 24; // card + gap
+const visible = () => Math.floor((window.innerWidth - 56*2) / cardWidth);
+const max = () => Math.max(0, track.children.length - visible());
+const update = () => {
+  track.style.transform = `translateX(-${idx * cardWidth}px)`;
+};
+prevBtn.addEventListener('click', () => { idx = Math.max(0, idx - 1); update(); });
+nextBtn.addEventListener('click', () => { idx = Math.min(max(), idx + 1); update(); });
+window.addEventListener('resize', () => { idx = Math.min(idx, max()); update(); });
+</script>
+
+</body>
+</html>

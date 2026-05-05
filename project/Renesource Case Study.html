@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renesource — Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #10100d;
+    --ink: #171712;
+    --white: #fbfcfe;
+    --gold: #fbde93;
+    --gold-dark: #c9a84c;
+    --gold-soft: #ead7a5;
+    --gray-100: #f4f4f1;
+    --gray-200: #e6e6e1;
+    --gray-300: #d2d2cc;
+    --gray-400: #9a9a94;
+    --gray-600: #5a5a54;
+    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background:
+      radial-gradient(circle at 78% 8%, rgba(251,222,147,0.13), transparent 28rem),
+      radial-gradient(circle at 12% 24%, rgba(255,255,255,0.045), transparent 26rem),
+      var(--black);
+    color: var(--white);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.055;
+    background-image:
+      linear-gradient(115deg, rgba(255,255,255,0.45) 0 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.9) 0 0.7px, transparent 0.8px);
+    background-size: 72px 72px, 5px 5px;
+    mix-blend-mode: overlay;
+  }
+
+  /* Corner brackets — wireframe-style */
+  .corner-bracket {
+    position: fixed;
+    width: 18px; height: 18px;
+    z-index: 90;
+    pointer-events: none;
+  }
+  .corner-bracket svg { width: 100%; height: 100%; }
+  .corner-tl { top: 16px; left: 16px; }
+  .corner-tr { top: 16px; right: 16px; transform: scaleX(-1); }
+  .corner-bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+  .corner-br { bottom: 16px; right: 16px; transform: scale(-1,-1); }
+
+  /* Top bar */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 56px;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .topbar a { pointer-events: auto; }
+  .topbar-logo {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-logo::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--gold-dark);
+  }
+  .topbar-link {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .topbar-link:hover { color: var(--gold); opacity: 1; }
+  .topbar.dark-mode .topbar-link { color: var(--white); }
+  .topbar.light-mode .topbar-link { color: var(--black); }
+  .topbar.light-mode .topbar-logo { color: var(--black); }
+  .topbar.light-mode .topbar-logo::before { background: var(--gold-dark); }
+
+  /* ─── HERO / QUESTION ────────────────────────── */
+  .hero {
+    padding: 130px 56px 72px;
+    background: var(--black);
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    margin-bottom: 24px;
+    position: relative;
+    padding-top: 16px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .hero-question {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 4.6vw, 68px);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    max-width: 1100px;
+  }
+  .hero-question em { font-style: italic; color: var(--gold); }
+
+  /* Pillars row */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, max-content) 1fr;
+    gap: 64px;
+    align-items: center;
+    margin-top: 56px;
+    padding-bottom: 36px;
+  }
+  .pillar { display: flex; gap: 14px; align-items: flex-start; }
+  .pillar-icon {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(251,222,147,0.4);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pillar-icon svg { width: 20px; height: 20px; stroke: var(--gold); fill: none; stroke-width: 1.2; }
+  .pillar-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    margin-bottom: 2px;
+  }
+  .pillar-sub {
+    font-size: 11px;
+    color: var(--gray-400);
+    line-height: 1.5;
+  }
+  .visit-link {
+    justify-self: end;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dark);
+    padding-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .visit-link:hover { color: var(--white); }
+
+  /* Full-bleed hero image */
+  .full-bleed-img {
+    margin: 0;
+    height: 76vh;
+    min-height: 560px;
+    background:
+      linear-gradient(180deg, rgba(14,14,14,0.22), rgba(14,14,14,0.5)),
+      linear-gradient(90deg, rgba(14,14,14,0.52), transparent 28%, transparent 72%, rgba(14,14,14,0.42)),
+      url('./uploads/c1951b8d-fe75-479e-bdfa-2413c6e7cd25.png') center / cover no-repeat;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(251,222,147,0.12);
+    border-bottom: 1px solid rgba(251,222,147,0.12);
+  }
+  .full-bleed-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 48%, transparent 0 42%, rgba(14,14,14,0.42) 100%),
+      linear-gradient(0deg, rgba(251,222,147,0.08), rgba(251,222,147,0));
+    mix-blend-mode: multiply;
+  }
+  .full-bleed-img-label {
+    position: absolute;
+    bottom: 22px; left: 56px;
+    font-family: monospace;
+    font-size: 10px;
+    color: rgba(251,252,254,0.58);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    z-index: 2;
+  }
+  .full-bleed-img-label::after {
+    content: none;
+  }
+
+  /* ─── TESTIMONIAL ────────────────────────────── */
+  .testimonial-block {
+    padding: 0 56px 96px;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .testimonial-quote-wrap { position: relative; padding-top: 24px; }
+  .quote-bracket {
+    font-family: var(--font-display);
+    font-size: 88px;
+    font-style: italic;
+    color: var(--gold);
+    line-height: 0;
+    position: absolute;
+    top: 36px; left: 0;
+  }
+  .testimonial-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-left: 48px;
+  }
+  .tl-line {
+    height: 12px;
+    background: var(--gray-300);
+    opacity: 0.55;
+  }
+  .tl-line.w-95 { width: 95%; }
+  .tl-line.w-88 { width: 88%; }
+  .tl-line.w-72 { width: 72%; }
+  .tl-line.w-40 { width: 40%; }
+  .testimonial-author {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding-top: 36px;
+  }
+  .author-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .author-avatar svg { width: 22px; height: 22px; stroke: var(--gray-400); fill: none; stroke-width: 1.2; }
+  .author-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--white);
+    font-weight: 500;
+  }
+  .author-role {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+  .work-together {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dark);
+    padding-bottom: 4px;
+  }
+
+  /* ─── LIGHT THEME SWITCH ─────────────────────── */
+  .light {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  /* ─── OVERVIEW (sticky left, images right) ───── */
+  .overview {
+    background:
+      linear-gradient(180deg, #f8f8f3, var(--gray-100));
+    padding: 128px 56px;
+    position: relative;
+  }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.78fr) minmax(0, 1.22fr);
+    gap: 96px;
+    align-items: start;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  .overview-left {
+    position: sticky;
+    top: 80px;
+  }
+  .overview-label {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 4vw, 60px);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: var(--black);
+    margin-bottom: 28px;
+    padding-top: 14px;
+    position: relative;
+  }
+  .overview-label::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .overview-text {
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--gray-600);
+    margin-bottom: 42px;
+  }
+  .overview-meta {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    row-gap: 14px;
+    column-gap: 16px;
+    border-top: 1px solid var(--gray-300);
+    padding-top: 20px;
+  }
+  .om-key {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gray-400);
+    padding-top: 2px;
+  }
+  .om-val {
+    font-size: 14px;
+    color: var(--black);
+    font-weight: 400;
+  }
+  .overview-images {
+    display: grid;
+    grid-template-columns: 1fr 0.72fr;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .browser-frame {
+    width: 100%;
+    max-width: none;
+    border: 1px solid rgba(16,16,13,0.13);
+    background: rgba(255,255,255,0.78);
+    overflow: hidden;
+    box-shadow: 0 24px 70px rgba(16,16,13,0.08);
+  }
+  .browser-frame.offset {
+    width: 100%;
+    transform: translateY(74px);
+    margin-left: 0;
+  }
+  .browser-bar {
+    height: 28px;
+    background: var(--gray-200);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 6px;
+    border-bottom: 1px solid var(--gray-300);
+  }
+  .browser-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--gray-300);
+  }
+  .browser-bar-line {
+    flex: 1;
+    height: 12px;
+    background: var(--white);
+    margin-left: 14px;
+    border: 1px solid var(--gray-300);
+  }
+  .browser-body {
+    height: 390px;
+    background:
+      linear-gradient(145deg, rgba(16,16,13,0.06), transparent),
+      var(--gray-100);
+    position: relative;
+    overflow: hidden;
+  }
+  .browser-body::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px)),
+                linear-gradient(45deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+  .browser-body::before {
+    content: 'Evidence slot';
+    position: absolute;
+    left: 24px;
+    bottom: 22px;
+    z-index: 2;
+    color: rgba(16,16,13,0.45);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ─── CHALLENGE (phone left, text right) ─────── */
+  .challenge {
+    background: var(--ink);
+    padding: 128px 56px;
+    color: var(--white);
+  }
+  .challenge-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+    gap: 88px;
+    align-items: center;
+    max-width: 1260px;
+    margin: 0 auto;
+  }
+  .phone-wrap {
+    display: grid;
+    gap: 16px;
+  }
+  .phone-wrap::before {
+    content: 'Content archaeology';
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .phone-frame {
+    width: 100%;
+    min-height: 440px;
+    border: 1px solid rgba(251,222,147,0.18);
+    border-radius: 0;
+    padding: 22px;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(251,222,147,0.13), transparent 38%),
+      rgba(255,255,255,0.045);
+    position: relative;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+  }
+  .phone-frame::before {
+    content: 'Old site copy';
+    position: absolute;
+    top: 18px; left: 22px;
+    transform: none;
+    width: auto; height: auto;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    color: rgba(251,252,254,0.45);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: transparent;
+    border-radius: 0;
+    margin-top: 42px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 12px;
+  }
+  .ps-line {
+    height: 8px;
+    background: rgba(251,252,254,0.18);
+    border-radius: 2px;
+  }
+  .ps-line.short { width: 50%; }
+  .ps-line.med { width: 75%; }
+  .ps-block {
+    height: 90px;
+    background: rgba(251,222,147,0.15);
+    border: 1px solid rgba(251,222,147,0.16);
+    border-radius: 0;
+    margin: 8px 0;
+  }
+  .ps-line.tall { height: 10px; background: rgba(251,222,147,0.34); width: 60%; margin-top: 6px; }
+  .challenge-content {}
+  .challenge-eyebrow {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 4.3vw, 68px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    margin-bottom: 30px;
+    position: relative;
+    padding-top: 14px;
+  }
+  .challenge-eyebrow::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .challenge-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: rgba(251,252,254,0.72);
+    margin-bottom: 28px;
+    max-width: 540px;
+  }
+  .challenge-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .challenge-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 14px;
+    color: rgba(251,252,254,0.88);
+    line-height: 1.6;
+  }
+  .challenge-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold-dark);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Process narrative */
+  .process {
+    background: var(--gray-100);
+    padding: 110px 56px;
+    overflow: hidden;
+  }
+  .process-header {
+    max-width: 820px;
+    margin-bottom: 56px;
+  }
+  .process-title {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 4vw, 58px);
+    font-weight: 650;
+    color: var(--black);
+    position: relative;
+    padding-top: 14px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .process-title::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .process-kicker {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .process-intro {
+    color: var(--gray-600);
+    font-size: 16px;
+    line-height: 1.85;
+    margin-top: 24px;
+  }
+  .process-story {
+    display: grid;
+    gap: 42px;
+  }
+  .phase-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(440px, 1.18fr);
+    gap: 64px;
+    align-items: start;
+    padding-bottom: 54px;
+    border-bottom: 1px solid var(--gray-300);
+  }
+  .phase-list {
+    display: grid;
+    gap: 18px;
+  }
+  .phase-card {
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 18px 45px rgba(14,14,14,0.05);
+  }
+  .phase-card::before {
+    content: attr(data-step);
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .phase-card h3 {
+    font-size: 24px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+    color: var(--black);
+  }
+  .phase-card p {
+    color: var(--gray-600);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .phase-card ul {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .phase-card li {
+    color: var(--black);
+    font-size: 14px;
+    line-height: 1.55;
+    display: flex;
+    gap: 12px;
+  }
+  .phase-card li::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--gold-dark);
+    margin-top: 11px;
+    flex-shrink: 0;
+  }
+  .phase-card.featured {
+    min-height: 100%;
+  }
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .sketch-board {
+    position: sticky;
+    top: 92px;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    padding: 12px;
+    box-shadow: 0 34px 80px rgba(14,14,14,0.16);
+    transform: rotate(-0.45deg);
+  }
+  .sketch-label {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin: 12px 12px 14px;
+  }
+  .sketch-photo {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    filter: saturate(0.92) contrast(1.03);
+  }
+  .competitor-audit {
+    display: grid;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .competitor-logo {
+    min-height: 64px;
+    border: 1px solid var(--gray-300);
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    text-align: center;
+  }
+  .logo-solenergy {
+    background: #050505;
+    color: #fff;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .logo-solenergy span { color: #f6ad36; margin-left: 8px; }
+  .logo-solaric {
+    color: #086ea9;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .logo-solaric span { color: #f0a51c; }
+  .asset-slots {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .asset-slot {
+    min-height: 74px;
+    border: 1px dashed var(--gray-300);
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    text-align: center;
+  }
+
+  /* ─── RESULTS ────────────────────────────────── */
+  .results {
+    background: var(--white);
+    padding: 96px 56px;
+  }
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .results-left {}
+  .results-title {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 22px;
+    position: relative;
+    padding-top: 14px;
+  }
+  .results-title::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 32px; height: 2px;
+    background: var(--gold-dark);
+  }
+  .results-text {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--gray-600);
+    margin-bottom: 24px;
+    max-width: 460px;
+  }
+  .results-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .results-list li {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--black);
+  }
+  .results-list li::before {
+    content: '';
+    width: 16px; height: 1px;
+    background: var(--gold-dark);
+    margin-top: 11px;
+    flex-shrink: 0;
+  }
+  .results-image {
+    height: 360px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    position: relative;
+    overflow: hidden;
+  }
+  .results-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px)),
+                linear-gradient(45deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+
+  /* ─── FINAL CTA / OUTCOME ────────────────────── */
+  .outcome {
+    background: var(--white);
+    padding: 0 56px 96px;
+  }
+  .outcome-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .outcome-image {
+    height: 380px;
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    position: relative;
+    overflow: hidden;
+  }
+  .outcome-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px)),
+                linear-gradient(45deg, transparent calc(50% - 1px), var(--gray-300) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+  .outcome-content {}
+  .outcome-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .outcome-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 3.6vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--black);
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+  .outcome-title em { font-style: italic; color: var(--gold-dark); }
+  .outcome-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--gray-600);
+    margin-bottom: 28px;
+    max-width: 480px;
+  }
+  .outcome-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .outcome-bullets li {
+    display: flex;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--black);
+    align-items: flex-start;
+  }
+  .outcome-bullets li::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold-dark);
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .outcome-author {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding-top: 28px;
+    border-top: 1px solid var(--gray-300);
+  }
+  .outcome-author .author-avatar {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+  }
+  .outcome-author .author-avatar svg { stroke: var(--gray-400); }
+  .outcome-author .author-name { color: var(--black); }
+
+  /* footer brackets row */
+  .end-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 56px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-200);
+  }
+  .end-row-icons {
+    display: flex;
+    gap: 20px;
+  }
+  .end-icon {
+    width: 26px; height: 26px;
+    border: 1px solid var(--gray-300);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .end-icon svg {
+    width: 12px; height: 12px;
+    stroke: var(--gray-400);
+    fill: none;
+    stroke-width: 1.2;
+  }
+
+  /* Premium case-study pass: post-hero only */
+  .overview {
+    background: linear-gradient(180deg, #f8f8f3, var(--gray-100));
+    padding-top: 128px;
+    padding-bottom: 128px;
+  }
+  .overview-grid,
+  .challenge-grid,
+  .process-story,
+  .results-grid,
+  .outcome-grid {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .overview-grid {
+    grid-template-columns: minmax(320px, 0.78fr) minmax(0, 1.22fr);
+    gap: 96px;
+  }
+  .overview-label,
+  .challenge-eyebrow,
+  .process-title,
+  .results-title,
+  .outcome-title {
+    font-family: var(--font-display);
+    font-weight: 750;
+    letter-spacing: -0.05em;
+  }
+  .overview-label {
+    font-size: clamp(36px, 4vw, 62px);
+    line-height: 0.98;
+    margin-bottom: 30px;
+  }
+  .overview-text {
+    font-size: 17px;
+    line-height: 1.85;
+    margin-bottom: 42px;
+  }
+  .overview-images {
+    display: grid;
+    grid-template-columns: 1fr 0.72fr;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .browser-frame {
+    max-width: none;
+    border-color: rgba(16,16,13,0.13);
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 24px 70px rgba(16,16,13,0.08);
+  }
+  .browser-frame.offset {
+    width: 100%;
+    transform: translateY(74px);
+  }
+  .browser-body {
+    height: 390px;
+    background: linear-gradient(145deg, rgba(16,16,13,0.06), transparent), var(--gray-100);
+  }
+  .browser-body::before,
+  .results-image::before,
+  .outcome-image::before {
+    content: 'Replace with real project asset';
+    position: absolute;
+    left: 24px;
+    bottom: 22px;
+    z-index: 2;
+    color: rgba(16,16,13,0.45);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .challenge {
+    background: var(--ink);
+    padding-top: 128px;
+    padding-bottom: 128px;
+    color: var(--white);
+  }
+  .challenge-grid {
+    grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+    gap: 88px;
+  }
+  .phone-wrap {
+    display: grid;
+    gap: 16px;
+  }
+  .phone-wrap::before {
+    content: 'Content archaeology';
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .phone-frame {
+    width: 100%;
+    min-height: 440px;
+    border: 1px solid rgba(251,222,147,0.18);
+    border-radius: 0;
+    padding: 22px;
+    background: radial-gradient(circle at 20% 20%, rgba(251,222,147,0.13), transparent 38%), rgba(255,255,255,0.045);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+  }
+  .phone-frame::before {
+    content: 'Old site copy';
+    top: 18px;
+    left: 22px;
+    transform: none;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: 0;
+    color: rgba(251,252,254,0.45);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .phone-screen {
+    background: transparent;
+    border-radius: 0;
+    margin-top: 42px;
+    height: auto;
+    padding: 0;
+    gap: 12px;
+  }
+  .ps-line {
+    height: 8px;
+    background: rgba(251,252,254,0.18);
+  }
+  .ps-block {
+    height: 90px;
+    background: rgba(251,222,147,0.15);
+    border: 1px solid rgba(251,222,147,0.16);
+    border-radius: 0;
+  }
+  .ps-line.tall {
+    height: 10px;
+    background: rgba(251,222,147,0.34);
+  }
+  .challenge-eyebrow {
+    font-size: clamp(38px, 4.6vw, 72px);
+    line-height: 0.98;
+    color: var(--white);
+    margin-bottom: 30px;
+  }
+  .challenge-text {
+    font-size: 18px;
+    color: rgba(251,252,254,0.72);
+  }
+  .challenge-list li {
+    color: rgba(251,252,254,0.88);
+  }
+  .process {
+    background:
+      linear-gradient(90deg, rgba(16,16,13,0.035) 1px, transparent 1px),
+      linear-gradient(180deg, #f7f4eb 0%, #efeee7 100%);
+    background-size: 92px 100%, auto;
+    padding-top: 150px;
+    padding-bottom: 150px;
+  }
+  .process-header {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 82px;
+    display: grid;
+    grid-template-columns: 0.78fr 1.22fr;
+    gap: 88px;
+    align-items: end;
+  }
+  .process-title {
+    font-size: clamp(52px, 7vw, 112px);
+    line-height: 0.88;
+    max-width: 620px;
+  }
+  .process-intro {
+    font-size: 20px;
+    max-width: 680px;
+    margin-top: 0;
+    padding-bottom: 10px;
+  }
+  .process-kicker { grid-column: 1 / -1; margin-bottom: -42px; }
+  .phase-feature {
+    grid-template-columns: minmax(320px, 0.62fr) minmax(0, 1.38fr);
+    gap: 36px;
+    align-items: stretch;
+    margin-bottom: 28px;
+  }
+  .phase-card {
+    background: transparent;
+    border: 0;
+    border-top: 1px solid rgba(16,16,13,0.16);
+    padding: 42px 0;
+    box-shadow: none;
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 34px;
+    overflow: visible;
+  }
+  .phase-card:hover {
+    transform: none;
+    border-color: rgba(16,16,13,0.16);
+  }
+  .phase-card::after {
+    content: none;
+  }
+  .phase-card::before {
+    grid-row: 1 / span 3;
+    font-family: var(--font-display);
+    font-size: clamp(42px, 5vw, 82px);
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: rgba(16,16,13,0.2);
+    margin: 0;
+  }
+  .phase-card h3 {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 3.4vw, 58px);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+    max-width: 760px;
+  }
+  .phase-card p { max-width: 760px; }
+  .phase-card.featured {
+    background:
+      radial-gradient(circle at 20% 0%, rgba(251,222,147,0.16), transparent 18rem),
+      linear-gradient(155deg, rgba(16,16,13,0.98), rgba(34,31,24,0.96)),
+      var(--black);
+    color: var(--white);
+    border: 1px solid rgba(251,222,147,0.16);
+    box-shadow: 0 36px 90px rgba(16,16,13,0.22);
+    padding: clamp(34px, 4vw, 58px);
+    display: block;
+  }
+  .phase-card.featured h3,
+  .phase-card.featured li { color: var(--white); }
+  .phase-card.featured p { color: rgba(251,252,254,0.72); }
+  .phase-card.featured::before { color: var(--gold); }
+  .phase-card.featured li::before { background: var(--gold); }
+  .sketch-board {
+    background: #f8f1df;
+    border-color: rgba(16,16,13,0.16);
+    padding: 0;
+    box-shadow: 0 42px 95px rgba(16,16,13,0.18);
+    transform: rotate(-1.2deg);
+    overflow: hidden;
+  }
+  .sketch-label { margin: 18px 20px 0; position: absolute; z-index: 2; color: rgba(16,16,13,0.52); }
+  .sketch-photo { aspect-ratio: 16 / 11; }
+  .phase-grid {
+    display: block;
+    background: rgba(255,255,255,0.36);
+    border-top: 1px solid rgba(16,16,13,0.12);
+    border-bottom: 1px solid rgba(16,16,13,0.12);
+    padding: 0 clamp(24px, 4vw, 58px);
+  }
+  .phase-grid .phase-card:last-child { border-bottom: 0; }
+  .competitor-audit {
+    grid-column: 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    max-width: 760px;
+  }
+  .asset-slots {
+    grid-column: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 760px;
+  }
+  .asset-slot {
+    min-height: 132px;
+  }
+  .competitor-audit {
+    padding-top: 20px;
+    border-top: 1px solid rgba(16,16,13,0.1);
+  }
+  .competitor-logo {
+    min-height: 76px;
+    background: rgba(244,244,241,0.74);
+  }
+  .asset-slot {
+    min-height: 118px;
+    border: 1px solid rgba(16,16,13,0.12);
+    background:
+      linear-gradient(135deg, transparent calc(50% - 1px), rgba(16,16,13,0.1) 50%, transparent calc(50% + 1px)),
+      linear-gradient(45deg, transparent calc(50% - 1px), rgba(16,16,13,0.08) 50%, transparent calc(50% + 1px)),
+      rgba(244,244,241,0.8);
+    color: var(--gray-600);
+    position: relative;
+    overflow: hidden;
+  }
+  .asset-slot::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(16,16,13,0.08);
+  }
+  .results {
+    background: var(--black);
+    padding-top: 132px;
+    padding-bottom: 132px;
+    color: var(--white);
+  }
+  .results-grid {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    gap: 88px;
+  }
+  .results-title {
+    font-size: clamp(42px, 5vw, 78px);
+    line-height: 0.98;
+    color: var(--white);
+  }
+  .results-text {
+    font-size: 18px;
+    color: rgba(251,252,254,0.72);
+    max-width: 540px;
+  }
+  .results-list li { color: rgba(251,252,254,0.9); }
+  .results-image {
+    min-height: 460px;
+    background: linear-gradient(180deg, rgba(251,222,147,0.08), rgba(251,252,254,0.02)), rgba(255,255,255,0.045);
+    border-color: rgba(251,222,147,0.18);
+  }
+  .results-image::before { color: rgba(251,252,254,0.45); }
+  .results-image::after {
+    background:
+      linear-gradient(135deg, transparent calc(50% - 1px), rgba(251,222,147,0.16) 50%, transparent calc(50% + 1px)),
+      linear-gradient(45deg, transparent calc(50% - 1px), rgba(251,252,254,0.12) 50%, transparent calc(50% + 1px));
+    opacity: 0.75;
+  }
+  .outcome {
+    background: linear-gradient(180deg, var(--black) 0, var(--black) 16%, #f7f7f2 16%, var(--white) 100%);
+    padding-bottom: 132px;
+  }
+  .outcome-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+  }
+  .outcome-image {
+    min-height: 500px;
+    border-color: rgba(16,16,13,0.12);
+    background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(244,244,241,0.96)), var(--gray-100);
+  }
+  .outcome-content {
+    background: var(--white);
+    border: 1px solid rgba(16,16,13,0.1);
+    padding: clamp(34px, 4vw, 58px);
+    box-shadow: 0 28px 70px rgba(16,16,13,0.08);
+  }
+  .outcome-title {
+    font-size: clamp(38px, 4.6vw, 68px);
+    line-height: 0.98;
+  }
+
+  @media (max-width: 900px) {
+    .topbar, .hero, .testimonial-block, .overview, .challenge, .results, .outcome, .end-row { padding-left: 24px; padding-right: 24px; }
+    .full-bleed-img { min-height: 340px; }
+    .pillars { grid-template-columns: 1fr; gap: 20px; }
+    .visit-link { justify-self: start; }
+    .testimonial-block, .overview-grid, .challenge-grid, .results-grid, .outcome-grid { grid-template-columns: 1fr; gap: 48px; }
+    .overview-left { position: static; }
+    .process { padding-left: 24px; padding-right: 24px; }
+    .process-header, .phase-feature, .phase-grid { grid-template-columns: 1fr; display: grid; }
+    .process-kicker { grid-column: auto; margin-bottom: 0; }
+    .phase-card { grid-template-columns: 1fr; gap: 18px; padding: 34px 0; }
+    .phase-card::before { grid-row: auto; }
+    .competitor-audit, .asset-slots { grid-column: auto; grid-template-columns: 1fr; }
+    .sketch-board { position: relative; top: 0; min-height: 0; }
+    .asset-slots { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Corner brackets -->
+<div class="corner-bracket corner-tl"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+<div class="corner-bracket corner-tr"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+<div class="corner-bracket corner-bl"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+<div class="corner-bracket corner-br"><svg viewBox="0 0 18 18"><path d="M0 0 L18 0 M0 0 L0 18" stroke="#9a9a94" fill="none" stroke-width="1"/></svg></div>
+
+<!-- Top bar -->
+<div class="topbar dark-mode" id="topbar">
+  <a href="#" class="topbar-logo">Renesource</a>
+  <a href="#contact" class="topbar-link">Free Consultation</a>
+</div>
+
+<!-- HERO / Question -->
+<section class="hero">
+  <div class="hero-eyebrow" style="font-family: 'DM Sans'; font-size: 14px">RENESOURCE</div>
+  <h1 class="hero-question" style="font-family: 'DM Sans'; font-weight: 600">
+    How did renewable energy<br>
+    consultants <em>visually prove</em> they<br>
+    were one of the best nationwide?
+  </h1>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-5 5 5 4-4 4 4"/></svg>
+      </div>
+      <div>
+        <div class="pillar-title">Project showcases</div>
+        <div class="pillar-sub">Visual proof of work</div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 4h18l-7 9v6l-4 2v-8z"/></svg>
+      </div>
+      <div>
+        <div class="pillar-title">Lead generation</div>
+        <div class="pillar-sub">Clearer conversion path</div>
+      </div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      </div>
+      <div>
+        <div class="pillar-title">Credibility</div>
+        <div class="pillar-sub">Future-proof presentation</div>
+      </div>
+    </div>
+    <a href="#" class="visit-link">Visit website ↗</a>
+  </div>
+</section>
+
+<!-- Full-bleed aerial image -->
+<div class="full-bleed-img">
+  <span class="full-bleed-img-label">// aerial solar array / visual proof before the story</span>
+</div>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-block">
+  <div class="testimonial-quote-wrap">
+    <span class="quote-bracket">"</span>
+    <div class="testimonial-lines">
+      <div class="tl-line w-95"></div>
+      <div class="tl-line w-88"></div>
+      <div class="tl-line w-72"></div>
+      <div class="tl-line w-40"></div>
+    </div>
+  </div>
+  <div>
+    <div class="testimonial-author">
+      <div class="author-avatar">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </div>
+      <div>
+        <div class="author-name">Client Name</div>
+        <div class="author-role">Title, Renesource</div>
+      </div>
+      <a href="#" class="work-together">Let's work together →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LIGHT THEME BEGINS ─── -->
+
+<!-- OVERVIEW -->
+<section class="overview light">
+  <div class="overview-grid">
+    <div class="overview-left">
+      <h2 class="overview-label">Overview</h2>
+      <p class="overview-text">Renesource had strong expertise, a solid reputation, and renewable energy experience across the Philippines, but their outdated website hid that value behind walls of text. The redesign focused on visibility, clarity, and lead generation.</p>
+      <div class="overview-meta">
+        <div class="om-key">P.O.C</div><div class="om-val">Founder / Client</div>
+        <div class="om-key">Industry</div><div class="om-val">Renewable Energy</div>
+        <div class="om-key">Tools</div><div class="om-val">Webflow, CMS, SEO, UX/UI</div>
+      </div>
+    </div>
+    <div class="overview-images">
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+          <span class="browser-bar-line"></span>
+        </div>
+        <div class="browser-body"></div>
+      </div>
+      <div class="browser-frame offset">
+        <div class="browser-bar">
+          <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+          <span class="browser-bar-line"></span>
+        </div>
+        <div class="browser-body"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGE -->
+<section class="challenge">
+  <div class="challenge-grid">
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="ps-line med"></div>
+          <div class="ps-line short"></div>
+          <div class="ps-block"></div>
+          <div class="ps-line tall"></div>
+          <div class="ps-line med"></div>
+          <div class="ps-line"></div>
+          <div class="ps-line short"></div>
+          <div class="ps-block"></div>
+          <div class="ps-line med"></div>
+        </div>
+      </div>
+    </div>
+    <div class="challenge-content">
+      <h2 class="challenge-eyebrow">Challenge</h2>
+      <p class="challenge-text">Renesource already had some of the biggest renewable energy projects in the nation and powerful expertise to back it up. But that value was buried behind dense text and an outdated web experience.</p>
+      <ul class="challenge-list">
+        <li>Information was hard to scan and trust</li>
+        <li>Project value and impact weren't visible early</li>
+        <li>Lead paths were unclear and fragmented</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS STORY -->
+<section class="process light">
+  <div class="process-header">
+    <div class="process-kicker">The case study</div>
+    <h2 class="process-title">Process is the proof.</h2>
+    <p class="process-intro">Renesource did not need a louder sales page. The work was about uncovering what was already strong, then turning buried expertise into a modern website that could compete on presentation.</p>
+  </div>
+
+  <div class="process-story">
+    <div class="phase-feature">
+      <article class="phase-card featured" data-step="01 / Discovery">
+        <h3>A household name with proof buried under an old website.</h3>
+        <p>Renesource had a lot of good projects and strong recognition in the Philippines, but the website looked too old for the level of work behind the brand. During discovery, the core issue became clear: the company had credibility, but the digital experience was hiding it.</p>
+        <ul>
+          <li>Strong projects were not being used as immediate proof.</li>
+          <li>The site made a known company feel less current than it was.</li>
+          <li>The first sketch focused on homepage proof, lead capture, credibility, and a solar calculator idea.</li>
+          <li>The sketches were approved before deeper research started.</li>
+        </ul>
+      </article>
+
+      <figure class="sketch-board" aria-label="Messy discovery notebook sketch for Renesource homepage strategy">
+        <figcaption class="sketch-label">Discovery notebook sketch / rough first solution map</figcaption>
+        <img class="sketch-photo" src="./uploads/renesource-discovery-sketch-messy.png" alt="Messy UX discovery notebook sketch for Renesource showing homepage proof, buried projects, lead magnet, solar calculator, credibility, and proof to inquiry flow">
+      </figure>
+    </div>
+
+    <div class="phase-grid">
+      <article class="phase-card" data-step="02 / Research">
+        <h3>The competitor sites exposed the market gap.</h3>
+        <p>After the sketches were approved, the research phase focused on competitor websites, market gaps, Renesource's own profile, and the target audience. The audit showed that the space had room for a cleaner, more credible, more modern digital presence.</p>
+        <div class="competitor-audit" aria-label="Competitor audit logo strip">
+          <div class="competitor-logo">Unidentified competitor logo / replace with supplied asset</div>
+          <div class="competitor-logo logo-solenergy">Solenergy <span>Systems Inc.</span></div>
+          <div class="competitor-logo logo-solaric"><span>O</span> Solaric</div>
+        </div>
+      </article>
+      <article class="phase-card" data-step="03 / Design">
+        <h3>Wireframes turned buried information into sections.</h3>
+        <p>The approved wireframes became the structure for the redesign. The old site had valuable information hidden inside long bodies of text, so the design translated that content into clearer UX sections using information architecture, visual hierarchy, and decision psychology.</p>
+        <div class="asset-slots" aria-label="Design asset replacement slots">
+          <div class="asset-slot">Replace with approved wireframe</div>
+          <div class="asset-slot">Replace with final homepage section</div>
+        </div>
+      </article>
+      <article class="phase-card" data-step="04 / Development">
+        <h3>The build solved gaps as they appeared.</h3>
+        <p>Development included writing copy from the research gaps, applying SEO best practices, and building the site cleanly. The solar calculator needed expert support to reach the level the client wanted, and custom icons were commissioned after the first icon direction was not accepted.</p>
+        <div class="asset-slots" aria-label="Development asset replacement slots">
+          <div class="asset-slot">Replace with solar calculator screenshot</div>
+          <div class="asset-slot">Replace with custom icon set</div>
+        </div>
+      </article>
+      <article class="phase-card" data-step="05 / Handoff / Outcome">
+        <h3>A modern website positioned ahead of dated competitors.</h3>
+        <p>The final handoff focused on a clean build, SEO-ready structure, and a modernized website that presented Renesource as more current and advanced than the dated competitor experiences found during research.</p>
+        <div class="asset-slots" aria-label="Outcome asset replacement slots">
+          <div class="asset-slot">Replace with final desktop screenshot</div>
+          <div class="asset-slot">Replace with final mobile screenshot</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="results">
+  <div class="results-grid">
+    <div class="results-left">
+      <h2 class="results-title">Results</h2>
+      <p class="results-text">The redesign made Renesource's expertise easier to understand, easier to trust, and easier to act on. Projects, impact, and credibility became visible early in the experience.</p>
+      <ul class="results-list">
+        <li>Project showcases became clearer</li>
+        <li>Impact was surfaced visually</li>
+        <li>Lead paths were easier to follow</li>
+        <li>The site felt more credible and future-proof</li>
+      </ul>
+    </div>
+    <div class="results-image">
+      <span class="full-bleed-img-label" style="color:rgba(0,0,0,0.3);">// final homepage screenshot</span>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOME / Final CTA -->
+<section class="outcome light" id="contact">
+  <div class="outcome-grid">
+    <div class="outcome-image">
+      <span class="full-bleed-img-label" style="color:rgba(0,0,0,0.3);">// final section image / mockup</span>
+    </div>
+    <div class="outcome-content">
+      <div class="outcome-eyebrow">Outcome</div>
+      <h2 class="outcome-title">From Challenge to<br><em>Clearer Digital Presence</em></h2>
+      <p class="outcome-body">By combining research, UX structure, stronger visuals, and SEO-informed content, the new case-study-driven website helped Renesource present itself like the nationwide player it already was.</p>
+      <ul class="outcome-bullets">
+        <li>Stronger proof of work and impact</li>
+        <li>Clearer path to inquiry and engagement</li>
+        <li>Future-ready platform that grows with the brand</li>
+      </ul>
+      <div class="outcome-author">
+        <div class="author-avatar">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <div>
+          <div class="author-name">Client Name</div>
+          <div class="author-role">Title, Renesource</div>
+        </div>
+        <a href="#" class="work-together">Let's work together →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- End row with little icons -->
+<div class="end-row">
+  <span style="font-size:10px;color:var(--gray-400);letter-spacing:0.14em;text-transform:uppercase;">© Renesource Case Study</span>
+  <div class="end-row-icons">
+    <span class="end-icon"><svg viewBox="0 0 14 14"><path d="M2 2L12 12M12 2L2 12"/></svg></span>
+    <span class="end-icon"><svg viewBox="0 0 14 14"><path d="M2 2L12 12M12 2L2 12"/></svg></span>
+    <span class="end-icon"><svg viewBox="0 0 14 14"><path d="M2 2L12 12M12 2L2 12"/></svg></span>
+  </div>
+</div>
+
+<script>
+// Topbar theme switching based on which section is in view
+const topbar = document.getElementById('topbar');
+const lightSections = document.querySelectorAll('.light');
+const checkTheme = () => {
+  const triggerY = 80;
+  let inLight = false;
+  lightSections.forEach(s => {
+    const r = s.getBoundingClientRect();
+    if (r.top <= triggerY && r.bottom >= triggerY) inLight = true;
+  });
+  topbar.classList.toggle('light-mode', inLight);
+  topbar.classList.toggle('dark-mode', !inLight);
+};
+window.addEventListener('scroll', checkTheme, { passive: true });
+checkTheme();
+</script>
+
+</body>
+</html>
