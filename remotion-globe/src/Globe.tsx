@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 import { Easing, interpolate } from "remotion";
 import { geoContains, geoDistance, geoOrthographic } from "d3-geo";
 import { feature } from "topojson-client";
@@ -8,8 +8,13 @@ import { C, FONT } from "./theme";
 // ---- Land dots: sampled once, then projected every frame ----
 const land = feature(land110 as any, (land110 as any).objects.land) as any;
 
-const LAND_DOTS: { lon: number; lat: number; seed: number }[] = (() => {
-  const dots: { lon: number; lat: number; seed: number }[] = [];
+type Dot = { lon: number; lat: number; seed: number; x: number; y: number; z: number };
+const toVec = (lon: number, lat: number) => {
+  const l = (lon * Math.PI) / 180, p = (lat * Math.PI) / 180;
+  return { x: Math.cos(p) * Math.cos(l), y: Math.cos(p) * Math.sin(l), z: Math.sin(p) };
+};
+const LAND_DOTS: Dot[] = (() => {
+  const dots: Dot[] = [];
   const latStep = 1.6;
   for (let lat = -58; lat <= 80; lat += latStep) {
     // keep dot spacing even on the sphere
@@ -17,7 +22,7 @@ const LAND_DOTS: { lon: number; lat: number; seed: number }[] = (() => {
     for (let lon = -180; lon < 180; lon += lonStep) {
       if (geoContains(land, [lon, lat])) {
         const seed = Math.abs(Math.sin(lon * 12.9898 + lat * 78.233) * 43758.5453) % 1;
-        dots.push({ lon, lat, seed });
+        dots.push({ lon, lat, seed, ...toVec(lon, lat) });
       }
     }
   }
@@ -62,35 +67,41 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
   // Wireframe placeholder fades out as dots arrive
   const wireOpacity = interpolate(t, [0, 30], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  const dots = LAND_DOTS.map((d, i) => {
-    const dist = geoDistance([d.lon, d.lat], center);
-    if (dist > Math.PI / 2) return null;
-    const p = projection([d.lon, d.lat]);
-    if (!p) return null;
-    const facing = Math.cos(dist); // 1 at centre, 0 at the limb
-    const appear = interpolate(t, [4 + d.seed * 40, 14 + d.seed * 40], [0, 1], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
-    // fade the lower part of the globe out behind the stat cards, like the design
-    const bottomFade = interpolate(p[1], [cy + r * 0.55, cy + r * 0.95], [1, 0.15], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    });
-    return (
-      <circle
-        key={i}
-        cx={p[0]}
-        cy={p[1]}
-        r={1.2 + 2.1 * facing}
-        fill={C.dot}
-        opacity={appear * (0.25 + 0.75 * facing) * bottomFade}
-      />
-    );
+  // Dots are drawn on a canvas: thousands of points stay cheap enough to run live on scroll.
+  const canvas = useRef<HTMLCanvasElement>(null);
+  useLayoutEffect(() => {
+    const ctx = canvas.current?.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, 1920, 1080);
+    ctx.fillStyle = C.dot;
+    const c = toVec(center[0], center[1]);
+    for (const d of LAND_DOTS) {
+      const facing = d.x * c.x + d.y * c.y + d.z * c.z; // cos(angle to view centre): 1 centre, 0 limb
+      if (facing <= 0) continue;
+      const p = projection([d.lon, d.lat]);
+      if (!p) continue;
+      const appear = interpolate(t, [4 + d.seed * 40, 18 + d.seed * 40], [0, 1], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      });
+      if (appear <= 0) continue;
+      // fade the lower part of the globe out behind the stat cards, like the design
+      const bottomFade = interpolate(p[1], [cy + r * 0.55, cy + r * 0.95], [1, 0.15], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+      });
+      ctx.globalAlpha = appear * (0.25 + 0.75 * facing) * bottomFade;
+      ctx.beginPath();
+      ctx.arc(p[0], p[1], (1.2 + 2.1 * facing) * (0.6 + 0.4 * appear), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   });
 
+  const layer = { position: "absolute", inset: 0, overflow: "visible" } as const;
   return (
-    <svg width={1920} height={1080} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
+    <>
+    <svg width={1920} height={1080} style={layer}>
       {/* Wireframe state: dashed circle with placeholder cross */}
       <g opacity={wireOpacity}>
         <circle cx={cx} cy={cy} r={r} fill={C.wireFill} fillOpacity={0.35} stroke={C.wire} strokeWidth={3} strokeDasharray="14 12" />
@@ -106,9 +117,11 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
         </radialGradient>
       </defs>
       <circle cx={cx} cy={cy} r={r} fill="url(#sphere)" opacity={1 - wireOpacity} />
+    </svg>
 
-      <g>{dots}</g>
+    <canvas ref={canvas} width={1920} height={1080} style={layer} />
 
+    <svg width={1920} height={1080} style={layer}>
       {/* Markers pop in one by one once the globe settles */}
       {MARKERS.map((m, i) => {
         const dist = geoDistance([m.lon, m.lat], center);
@@ -122,7 +135,8 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
           extrapolateRight: "clamp",
           easing: Easing.out(Easing.back(1.8)),
         }) * edge;
-        if (pop <= 0) return null;
+        // the easing returns ~1e-16 (not 0) before the start, so test time, not pop
+        if (t < mStart || pop < 0.001) return null;
         const pulse = ((t - mStart) % 45) / 45;
         const labelX = p[0] + m.dx;
         const labelY = p[1] + m.dy;
@@ -149,5 +163,6 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
         );
       })}
     </svg>
+    </>
   );
 };

@@ -10,14 +10,7 @@ const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const smooth = Easing.bezier(0.33, 0, 0.2, 1);
 const prog = (f: number, a: number, b: number) => interpolate(f, [a, b], [0, 1], { ...clamp, easing: smooth });
 
-// Selection targets in section coordinates (1920×1080)
-export const TARGETS = {
-  eyebrow: { x: 56, y: 70, w: 300, h: 64 },
-  heading: { x: 56, y: 150, w: 700, h: 300 },
-  body: { x: 56, y: 462, w: 610, h: 350 },
-  globe: { x: 872, y: 14, w: 836, h: 800 },
-  stats: { x: 56, y: 822, w: 1808, h: 242 },
-};
+export { TARGETS } from "./timeline";
 
 const WireLabel: React.FC<{ children: React.ReactNode; opacity?: number; style?: React.CSSProperties }> = ({ children, opacity = 1, style }) => (
   <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, letterSpacing: 0.6, color: "#9AA0A8", textTransform: "uppercase", opacity, ...style }}>{children}</div>

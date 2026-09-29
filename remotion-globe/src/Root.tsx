@@ -19,7 +19,7 @@ const SectionOnly: React.FC = () => {
 
 export const RemotionRoot: React.FC = () => (
   <>
-    <Composition id="DeviceShowcase" component={DeviceShowcase} durationInFrames={900} fps={60} width={1920} height={1080} />
+    <Composition id="DeviceShowcase" component={DeviceShowcase} defaultProps={{ mode: "video" as const }} durationInFrames={960} fps={60} width={1920} height={1080} />
     <Composition id="SectionOnly" component={SectionOnly} durationInFrames={720} fps={60} width={1920} height={1080} />
   </>
 );
