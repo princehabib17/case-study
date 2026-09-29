@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render GlobeTransformation out/globe-transformation.mp4"
+    "render": "remotion render DeviceShowcase out/device-showcase.mp4",
+    "render:section": "remotion render SectionOnly out/section-only.mp4"
   },
   "dependencies": {
     "@fontsource/plus-jakarta-sans": "^5.3.0",

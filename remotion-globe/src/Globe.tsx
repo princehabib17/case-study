@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Easing, interpolate, useCurrentFrame } from "remotion";
+import { Easing, interpolate } from "remotion";
 import { geoContains, geoDistance, geoOrthographic } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
@@ -36,20 +36,20 @@ export const MARKERS: { name: string; lon: number; lat: number; anchor: "start" 
   { name: "PHILIPPINES", lon: 121.8, lat: 12.9, anchor: "start", dx: 22, dy: 6 },
 ];
 
-type Props = { cx: number; cy: number; r: number; start: number };
+type Props = { cx: number; cy: number; r: number; start: number; frame: number };
 
-export const Globe: React.FC<Props> = ({ cx, cy, r, start }) => {
-  const frame = useCurrentFrame();
+export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
   const t = frame - start;
 
-  // Spin in fast, ease to rest facing Europe → Southeast Asia, then drift gently
+  // Spin in fast and ease towards Europe → Southeast Asia. A constant drift runs
+  // the whole time, so the globe never comes to a dead stop.
   const settle = 120;
-  const spin = interpolate(t, [0, settle], [-240, -62], {
+  const spin = interpolate(t, [0, settle], [-222, -50], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: Easing.out(Easing.cubic),
   });
-  const drift = Math.max(0, t - settle) * 0.06;
+  const drift = Math.max(0, t) * 0.035;
   const lambda = spin - drift;
   const phi = -30;
 
@@ -113,13 +113,15 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start }) => {
       {MARKERS.map((m, i) => {
         const dist = geoDistance([m.lon, m.lat], center);
         const p = projection([m.lon, m.lat]);
-        if (!p || dist > Math.PI / 2 - 0.05) return null;
+        if (!p || dist > Math.PI / 2 - 0.08) return null;
+        // fade out gently near the edge of the globe instead of popping
+        const edge = interpolate(dist, [Math.PI / 2 - 0.4, Math.PI / 2 - 0.08], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
         const mStart = settle - 20 + i * 6;
-        const pop = interpolate(t, [mStart, mStart + 12], [0, 1], {
+        const pop = interpolate(t, [mStart, mStart + 16], [0, 1], {
           extrapolateLeft: "clamp",
           extrapolateRight: "clamp",
-          easing: Easing.out(Easing.back(2.2)),
-        });
+          easing: Easing.out(Easing.back(1.8)),
+        }) * edge;
         if (pop <= 0) return null;
         const pulse = ((t - mStart) % 45) / 45;
         const labelX = p[0] + m.dx;
