@@ -2,8 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { Player, PlayerRef } from "@remotion/player";
 import { DeviceShowcase } from "../src/DeviceShowcase";
-
-const FRAMES = 960;
+import { FRAMES } from "../src/timeline";
 
 // Scroll drives the animation. The displayed progress chases the scroll position with
 // inertia (like Lenis smooth scrolling), so fast or jerky wheel input still glides.
@@ -42,7 +41,7 @@ const ScrollShowcase: React.FC = () => {
   }, []);
 
   return (
-    <div ref={track} style={{ height: "650vh", position: "relative" }}>
+    <div ref={track} style={{ height: "520vh", position: "relative" }}>
       <div style={{ position: "sticky", top: 0, height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#E9EBEF", overflow: "hidden" }}>
         <Player
           ref={player}

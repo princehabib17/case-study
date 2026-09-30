@@ -6,7 +6,7 @@ import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import { Section } from "./Section";
 import { FONT } from "./theme";
-import { PHASE, buildFrame, devicePose, lerp, selection, smooth, videoProgress, win } from "./timeline";
+import { PHASE, at, buildFrame, devicePose, lerp, selection, smooth, videoProgress, win } from "./timeline";
 
 export type ShowcaseProps = {
   /** "video": time drives progress, with eased ends. "scroll": frame = scroll progress, linear. */
@@ -246,7 +246,7 @@ export const DeviceShowcase: React.FC<ShowcaseProps> = ({ mode }) => {
   const k = shell(smooth(m)); // colours pass through their grey midpoint quickly
   const sel = selection(u);
   const pose = devicePose(u);
-  const intro = mode === "video" ? win(u, 0, 0.05) : 1;
+  const intro = mode === "video" ? win(u, 0, at(0.6)) : 1;
 
   // design frame placement inside the screen
   const sEditor = (APP_W - 2 * SIDE - 80) / 1920;
@@ -259,9 +259,9 @@ export const DeviceShowcase: React.FC<ShowcaseProps> = ({ mode }) => {
 
   // stage captions crossfade continuously
   const cap = [
-    { text: "Figma · Wireframe", dot: FIGMA_BLUE, o: 1 - win(u, 0.21, 0.25) },
-    { text: "Webflow · Build", dot: WEBFLOW_BLUE, o: win(u, 0.26, 0.3) * (1 - win(u, 0.77, 0.81)) },
-    { text: "Live website", dot: "#2E9E44", o: win(u, 0.82, 0.86) },
+    { text: "Figma · Wireframe", dot: FIGMA_BLUE, o: 1 - win(u, at(2.7), at(3.1)) },
+    { text: "Webflow · Build", dot: WEBFLOW_BLUE, o: win(u, at(3.2), at(3.6)) * (1 - win(u, at(8.0), at(8.4))) },
+    { text: "Live website", dot: "#2E9E44", o: win(u, at(8.5), at(8.9)) },
   ];
 
   return (

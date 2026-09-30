@@ -1,8 +1,8 @@
 // Samples the master timeline every frame and reports how much is moving.
 // A frame counts as "stalled" when every tracked signal has (near) zero velocity.
-import { PHASE, buildFrame, devicePose, selection, videoProgress, win } from "../src/timeline";
+import { FRAMES, PHASE, buildFrame, devicePose, selection, videoProgress, win } from "../src/timeline";
 
-const N = 960;
+const N = FRAMES;
 const signals = (u: number) => {
   const s = selection(u);
   const p = devicePose(u);

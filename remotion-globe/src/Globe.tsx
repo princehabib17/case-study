@@ -48,7 +48,7 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
 
   // Spin in fast and ease towards Europe → Southeast Asia. A constant drift runs
   // the whole time, so the globe never comes to a dead stop.
-  const settle = 120;
+  const settle = 100;
   const spin = interpolate(t, [0, settle], [-222, -50], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -65,7 +65,9 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
   const center: [number, number] = [-lambda, -phi];
 
   // Wireframe placeholder fades out as dots arrive
-  const wireOpacity = interpolate(t, [0, 30], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const wireOpacity = interpolate(t, [18, 44], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // placeholder cross retracts into the centre as the dots take over
+  const cross = 1 - interpolate(t, [0, 26], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.65, 0, 0.35, 1) });
 
   // Dots are drawn on a canvas: thousands of points stay cheap enough to run live on scroll.
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -80,7 +82,9 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
       if (facing <= 0) continue;
       const p = projection([d.lon, d.lat]);
       if (!p) continue;
-      const appear = interpolate(t, [4 + d.seed * 40, 18 + d.seed * 40], [0, 1], {
+      // radial wave: dots spread out from the centre of the placeholder to its edge
+      const delay = 2 + (1 - facing) * 34 + d.seed * 6;
+      const appear = interpolate(t, [delay, delay + 12], [0, 1], {
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
       });
@@ -105,8 +109,12 @@ export const Globe: React.FC<Props> = ({ cx, cy, r, start, frame }) => {
       {/* Wireframe state: dashed circle with placeholder cross */}
       <g opacity={wireOpacity}>
         <circle cx={cx} cy={cy} r={r} fill={C.wireFill} fillOpacity={0.35} stroke={C.wire} strokeWidth={3} strokeDasharray="14 12" />
-        <line x1={cx - r * 0.7} y1={cy - r * 0.7} x2={cx + r * 0.7} y2={cy + r * 0.7} stroke={C.wire} strokeWidth={3} />
-        <line x1={cx + r * 0.7} y1={cy - r * 0.7} x2={cx - r * 0.7} y2={cy + r * 0.7} stroke={C.wire} strokeWidth={3} />
+        <g transform={`translate(${cx} ${cy}) scale(${cross}) translate(${-cx} ${-cy})`} opacity={cross}>
+          <line x1={cx - r * 0.7} y1={cy - r * 0.7} x2={cx + r * 0.7} y2={cy + r * 0.7} stroke={C.wire} strokeWidth={3} />
+          <line x1={cx + r * 0.7} y1={cy - r * 0.7} x2={cx - r * 0.7} y2={cy + r * 0.7} stroke={C.wire} strokeWidth={3} />
+          <rect x={cx - 92} y={cy - 18} width={184} height={36} rx={6} fill="#FFFFFF" />
+          <text x={cx} y={cy + 6} textAnchor="middle" fontFamily={FONT} fontSize={15} fontWeight={600} letterSpacing={0.6} fill="#9AA0A8">INTERACTIVE GLOBE</text>
+        </g>
       </g>
 
       {/* Soft sphere shading */}

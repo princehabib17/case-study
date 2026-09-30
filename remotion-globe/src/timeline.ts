@@ -1,11 +1,17 @@
 // One master timeline. Everything is a function of a single progress value
 // u ∈ [0, 1]. In the video u comes from time; on the web it comes from scroll.
+// Times below are authored in seconds of the 13s video and converted to u.
 //
 // Rules that keep it smooth:
 //  - windows overlap, so something is always moving
-//  - paths that visit several targets use one C1-continuous spline, so they
-//    never decelerate to a stop at each target
+//  - paths that visit several targets use one C1-continuous spline
 //  - only the very start and very end of the whole piece come to rest
+
+export const DURATION_S = 13;
+export const FPS = 60;
+export const FRAMES = DURATION_S * FPS;
+/** seconds → progress */
+export const at = (s: number) => s / DURATION_S;
 
 export type Rect = { x: number; y: number; w: number; h: number };
 export type TargetKey = "eyebrow" | "heading" | "body" | "globe" | "stats";
@@ -29,37 +35,37 @@ export const smooth = (x: number) => {
 export const win = (u: number, a: number, b: number) => smooth((u - a) / (b - a));
 const sine = (x: number) => 0.5 - 0.5 * Math.cos(Math.PI * clamp01(x));
 
-// ---- phases (in u) ----
+// ---- phases ----
 export const PHASE = {
-  morph: [0.22, 0.33] as const, // Figma chrome morphs into Webflow chrome
-  build: [0.26, 0.8] as const, // section builds (maps to section build-frames 35 → 365)
-  panelsOut: [0.76, 0.93] as const, // editor panels leave, site grows to fill the screen
+  morph: [at(2.7), at(4.0)] as const, // Figma chrome morphs into Webflow chrome
+  panelsOut: [at(8.0), at(9.8)] as const, // editor panels leave, site grows to fill the screen
 };
-const BUILD_F: [number, number] = [35, 365];
+// Section build-frames: wireframe → final transformation runs from build-frame 40 to ~150,
+// i.e. roughly 3 seconds at this rate, as one overlapping wave.
+const BUILD_START_S = 3.5;
+const BUILD_RATE = 38; // build-frames per second of video
 
 export const buildFrame = (u: number) => {
-  const [a, b] = PHASE.build;
-  // linear: no pauses inside the build (the section looks identical for build-frames 0–35)
-  // Not capped at the end: build-frames keep counting so the globe keeps drifting and the
-  // markers keep pulsing after everything has arrived.
-  return lerp(BUILD_F[0], BUILD_F[1], Math.max(0, (u - a) / (b - a)));
+  // Not capped: build-frames keep counting so the globe keeps drifting and markers keep pulsing.
+  const s = u * DURATION_S;
+  return 35 + Math.max(0, s - BUILD_START_S) * BUILD_RATE;
 };
 
 // ---- selection path: Hermite spline through targets ----
 type Node = { u: number; target: TargetKey; label: string };
 const NODES: Node[] = [
-  { u: 0.02, target: "eyebrow", label: "Eyebrow" },
-  { u: 0.075, target: "heading", label: "H1 — Headline" },
-  { u: 0.12, target: "body", label: "Body copy" },
-  { u: 0.17, target: "globe", label: "Globe" },
-  { u: 0.215, target: "stats", label: "Stat cards" },
-  { u: 0.275, target: "eyebrow", label: "Div · eyebrow" },
-  { u: 0.3, target: "heading", label: "H1 · heading-xl" },
-  { u: 0.36, target: "body", label: "Div · body-lg" },
-  { u: 0.41, target: "globe", label: "Embed · globe-embed" },
-  { u: 0.54, target: "globe", label: "Embed · globe-embed" },
-  { u: 0.62, target: "stats", label: "Grid · stat-card" },
-  { u: 0.72, target: "stats", label: "Grid · stat-card" },
+  { u: at(0.3), target: "eyebrow", label: "Eyebrow" },
+  { u: at(0.85), target: "heading", label: "H1 — Headline" },
+  { u: at(1.4), target: "body", label: "Body copy" },
+  { u: at(1.95), target: "globe", label: "Globe" },
+  { u: at(2.5), target: "stats", label: "Stat cards" },
+  // Webflow pass rides just ahead of the transformation wave
+  { u: at(3.55), target: "eyebrow", label: "Div · eyebrow" },
+  { u: at(3.95), target: "heading", label: "H1 · heading-xl" },
+  { u: at(4.45), target: "body", label: "Div · body-lg" },
+  { u: at(4.95), target: "globe", label: "Embed · globe-embed" },
+  { u: at(5.6), target: "stats", label: "Grid · stat-card" },
+  { u: at(7.6), target: "stats", label: "Grid · stat-card" },
 ];
 
 const ROW_FIGMA: Record<TargetKey, number> = { eyebrow: 1, heading: 2, body: 3, globe: 4, stats: 5 };
@@ -102,28 +108,29 @@ export const selection = (u: number) => {
     cls: nearest.label.split("· ")[1] ?? "global-footprint",
     rowFigma: hermite(u, SRF),
     rowWebflow: hermite(u, SRW),
-    opacity: win(u, 0.0, 0.02) * (1 - win(u, 0.7, 0.77)),
+    opacity: win(u, 0, at(0.3)) * (1 - win(u, at(7.4), at(8.1))),
   };
 };
 
 // ---- device pose: one continuous move, with a soft sway that dies out ----
 export const devicePose = (u: number) => {
-  const settle = sine(u / 0.95);
-  const life = 1 - win(u, 0.7, 0.97);
+  const settle = sine(u / at(10.6));
+  const life = 1 - win(u, at(8.5), at(12.4));
+  const s = u * DURATION_S;
   return {
-    rotY: lerp(-28, 0, settle) + Math.sin(u * Math.PI * 2 * 1.15) * 2.2 * life,
-    rotX: lerp(12, 0, settle) + Math.cos(u * Math.PI * 2 * 0.8) * 1.2 * life,
+    rotY: lerp(-28, 0, settle) + Math.sin(s * 0.9) * 2.2 * life,
+    rotX: lerp(12, 0, settle) + Math.cos(s * 0.65) * 1.2 * life,
     rotZ: lerp(-2.4, 0, settle),
-    scale: lerp(0.72, 0.86, settle),
-    floatY: Math.sin(u * Math.PI * 2 * 1.4) * 7 * life,
+    // camera pushes in for the transformation, then eases back for the finished site
+    scale: 0.78 + 0.26 * sine(u / at(5.2)) - 0.14 * sine((u - at(5.2)) / at(5.8)),
+    floatY: Math.sin(s * 1.1) * 7 * life,
   };
 };
 
-/** time-based conversion for the video: gentle ease at both ends only */
+/** time-based conversion for the video: short ease at both ends only */
 export const videoProgress = (frame: number, total: number) => {
   const x = frame / (total - 1);
-  // short ease-in and ease-out ramps, constant speed through the middle
-  const r = 0.05;
+  const r = 0.04;
   const v = 1 / (1 - r); // peak speed so the curve still ends at 1
   if (x < r) return (v * x * x) / (2 * r);
   if (x > 1 - r) return 1 - (v * (1 - x) * (1 - x)) / (2 * r);
