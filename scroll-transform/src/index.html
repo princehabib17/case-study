@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renesource — Wireframe to Website</title>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<section class="track" id="track">
+  <div class="sticky">
+    <div class="stage" id="stage">
+      <div class="dotgrid" id="dotgrid"></div>
+
+      <!-- ============ FINAL SECTION (real content) ============ -->
+      <canvas id="globe" width="1920" height="1080"></canvas>
+
+      <div class="col">
+        <div class="eyebrow grp" id="g-eyebrow">
+          <div class="eyebrow-text" data-morph>GLOBAL FOOTPRINT</div>
+          <div class="eyeline" id="eyeline"></div>
+        </div>
+        <h1 class="h1 grp" id="g-heading" data-morph>Delivering Solar Expertise Across 8 Key Markets</h1>
+        <div class="body grp" id="g-body">
+          <p data-morph>From Europe to Southeast Asia and the Middle East, our work spans diverse markets with precision, performance, and long-term impact.</p>
+          <p data-morph>Backed by decades of experience, our team has built and delivered large-scale solar projects across 8 key markets. We bring deep local knowledge, trusted partnerships, and a proven track record in the Philippines RE/PV industry.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card grp" data-value="164" data-dec="0" data-unit="MW" data-icon="solar"><div class="badge"><svg viewBox="0 0 28 28"><path d="M4 20 L7 11 H21 L24 20 Z"/><path d="M9.3 11 L8.7 20 M14 11 V20 M18.7 11 L19.3 20 M5.5 15.5 H22.5"/><path d="M11 24 H17 M14 20 V24"/><circle cx="24" cy="6" r="2.5"/></svg></div><div class="ctext"><div class="num"><span class="val">0</span><span class="unit" data-morph>MW</span></div><div class="ttl" data-morph>Clean Energy Installed</div><div class="sub" data-morph>Total solar capacity deployed</div></div></div>
+        <div class="card grp" data-value="2.2" data-dec="1" data-unit="B" data-icon="bolt"><div class="badge"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M15.5 6 L9 15.5 H14 L12.5 22 L19 12.5 H14 Z"/></svg></div><div class="ctext"><div class="num"><span class="val">0</span><span class="unit" data-morph>B</span></div><div class="ttl" data-morph>Saved Yearly</div><div class="sub" data-morph>In energy costs for our clients</div></div></div>
+        <div class="card grp" data-value="161" data-dec="0" data-unit="K+" data-icon="leaf"><div class="badge"><svg viewBox="0 0 28 28"><path d="M6 22 C6 11 13 6 23 5 C23 15 17 22 6 22 Z"/><path d="M6 22 L16 12"/></svg></div><div class="ctext"><div class="num"><span class="val">0</span><span class="unit" data-morph>K+</span></div><div class="ttl" data-morph>CO₂ Tons Reduced Yearly</div><div class="sub" data-morph>Equivalent to planting 3.5M trees</div></div></div>
+        <div class="card grp" data-value="8" data-dec="0" data-unit="" data-icon="globe"><div class="badge"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M3 14 H25 M14 3 C9 9 9 19 14 25 M14 3 C19 9 19 19 14 25"/></svg></div><div class="ctext"><div class="num"><span class="val">0</span></div><div class="ttl" data-morph>Key Markets</div><div class="sub" data-morph>Europe, Middle East &amp; Southeast Asia</div></div></div>
+      </div>
+
+      <!-- ============ WIREFRAME (outlined boxes that fly into place) ============ -->
+      <div class="wf" id="wf">
+        <div class="box" data-for="g-eyebrow" data-rect="64,64,300,52"><span class="tag">Eyebrow</span><i class="ph" style="left:16px;top:26px;width:55%"></i></div>
+        <div class="box" data-for="g-heading" data-rect="64,150,600,290"><span class="tag">H1 — Headline</span><i class="ph thick" style="top:52px;width:82%"></i><i class="ph thick" style="top:128px;width:70%"></i><i class="ph thick" style="top:204px;width:58%"></i></div>
+        <div class="box" data-for="g-body" data-rect="64,470,520,320"><span class="tag">Body copy</span><i class="ph" style="top:46px;width:88%"></i><i class="ph" style="top:84px;width:80%"></i><i class="ph" style="top:122px;width:62%"></i><i class="ph" style="top:186px;width:86%"></i><i class="ph" style="top:224px;width:82%"></i><i class="ph" style="top:262px;width:54%"></i></div>
+        <div class="box media" data-for="globe" data-rect="960,90,640,600"><span class="tag">Interactive globe</span><svg class="x" preserveAspectRatio="none" viewBox="0 0 100 100"><line x1="0" y1="0" x2="100" y2="100"/><line x1="100" y1="0" x2="0" y2="100"/></svg></div>
+        <div class="box" data-for="card-0" data-rect="64,820,400,210"><span class="tag">Stat</span><i class="ph circ"></i><i class="ph" style="left:120px;top:52px;width:40%"></i><i class="ph" style="left:120px;top:96px;width:52%"></i></div>
+        <div class="box" data-for="card-1" data-rect="500,820,400,210"><span class="tag">Stat</span><i class="ph circ"></i><i class="ph" style="left:120px;top:52px;width:40%"></i><i class="ph" style="left:120px;top:96px;width:52%"></i></div>
+        <div class="box" data-for="card-2" data-rect="936,820,400,210"><span class="tag">Stat</span><i class="ph circ"></i><i class="ph" style="left:120px;top:52px;width:40%"></i><i class="ph" style="left:120px;top:96px;width:52%"></i></div>
+        <div class="box" data-for="card-3" data-rect="1372,820,400,210"><span class="tag">Stat</span><i class="ph circ"></i><i class="ph" style="left:120px;top:52px;width:40%"></i><i class="ph" style="left:120px;top:96px;width:52%"></i></div>
+      </div>
+
+      <div class="hint" id="hint">Scroll</div>
+    </div>
+  </div>
+</section>
+<section class="after"><p>End of section — scroll back up to watch it return to the wireframe.</p></section>
+<script>/*__JS__*/</script>
+</body>
+</html>
