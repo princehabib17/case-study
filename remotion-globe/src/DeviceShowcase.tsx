@@ -6,7 +6,7 @@ import "@fontsource/plus-jakarta-sans/600.css";
 import "@fontsource/plus-jakarta-sans/700.css";
 import { Section } from "./Section";
 import { FONT } from "./theme";
-import { PHASE, at, buildFrame, devicePose, lerp, selection, smooth, videoProgress, win } from "./timeline";
+import { PHASE, at, buildFrame, lerp, selection, smooth, videoProgress, win } from "./timeline";
 
 export type ShowcaseProps = {
   /** "video": time drives progress, with eased ends. "scroll": frame = scroll progress, linear. */
@@ -14,7 +14,7 @@ export type ShowcaseProps = {
 };
 
 const APP_W = 1600;
-const APP_H = 1000;
+const APP_H = 900; // 16:9 with APP_W, so the editor fills the frame exactly
 const TOP = 44;
 const SIDE = 260;
 const RAIL = 40;
@@ -245,7 +245,6 @@ export const DeviceShowcase: React.FC<ShowcaseProps> = ({ mode }) => {
   const e = win(u, PHASE.panelsOut[0], PHASE.panelsOut[1]); // panels out
   const k = shell(smooth(m)); // colours pass through their grey midpoint quickly
   const sel = selection(u);
-  const pose = devicePose(u);
   const intro = mode === "video" ? win(u, 0, at(0.6)) : 1;
 
   // design frame placement inside the screen
@@ -261,71 +260,38 @@ export const DeviceShowcase: React.FC<ShowcaseProps> = ({ mode }) => {
   const cap = [
     { text: "Figma · Wireframe", dot: FIGMA_BLUE, o: 1 - win(u, at(2.7), at(3.1)) },
     { text: "Webflow · Build", dot: WEBFLOW_BLUE, o: win(u, at(3.2), at(3.6)) * (1 - win(u, at(8.0), at(8.4))) },
-    { text: "Live website", dot: "#2E9E44", o: win(u, at(8.5), at(8.9)) },
   ];
 
+  // No device, no selection box: the editor fills the frame, flat.
   return (
-    <AbsoluteFill style={{ background: "radial-gradient(circle at 50% 38%, #FFFFFF 0%, #EEF0F3 55%, #E1E4E9 100%)", fontFamily: FONT, overflow: "hidden" }}>
+    <AbsoluteFill style={{ background: canvasBg, fontFamily: FONT, overflow: "hidden" }}>
+      <div style={{ position: "absolute", left: 0, top: 0, width: APP_W, height: APP_H, transform: `scale(${1920 / APP_W})`, transformOrigin: "0 0", overflow: "hidden", background: canvasBg, opacity: intro }}>
+        <AbsoluteFill style={{ backgroundImage: "radial-gradient(#D5D8DD 1.3px, transparent 1.3px)", backgroundSize: "24px 24px", opacity: (1 - m) * (1 - e) }} />
+        <Txt c="#8C8C8C" s={12.5} style={{ position: "absolute", left: frameLeft, top: frameTop - 22, opacity: (1 - m) * (1 - e) }}>Global Footprint — Desktop 1920</Txt>
+
+        {/* the design */}
+        <div style={{ position: "absolute", left: frameLeft, top: frameTop, width: 1920, height: 1080, transform: `scale(${scale})`, transformOrigin: "0 0", boxShadow: `0 ${12 / scale}px ${40 / scale}px rgba(0,0,0,${0.12 * (1 - e)})` }}>
+          <Section f={f} />
+        </div>
+
+        {/* editor shell, slides away at the end */}
+        <div style={{ position: "absolute", left: 0, top: 0, width: APP_W, height: TOP, transform: `translateY(${-TOP * 1.1 * e}px)` }}>
+          <TopBar k={k} m={m} />
+        </div>
+        <div style={{ position: "absolute", left: 0, top: TOP, width: SIDE, height: APP_H - TOP, transform: `translateX(${-SIDE * 1.05 * e}px)` }}>
+          <LeftPanel k={k} m={m} rowF={sel.rowFigma} rowW={sel.rowWebflow} />
+        </div>
+        <div style={{ position: "absolute", right: 0, top: TOP, width: SIDE, height: APP_H - TOP, transform: `translateX(${SIDE * 1.05 * e}px)` }}>
+          <RightPanel k={k} m={m} cls={sel.cls} />
+        </div>
+      </div>
+
       {cap.map((c) => (
-        <div key={c.text} style={{ position: "absolute", top: 44, left: 60, display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, background: "#0F1729", opacity: c.o * intro, transform: `translateY(${(1 - c.o) * 8}px)` }}>
+        <div key={c.text} style={{ position: "absolute", bottom: 40, left: "50%", display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, background: "#0F1729", opacity: c.o * intro, transform: `translateX(-50%) translateY(${(1 - c.o) * 8}px)` }}>
           <span style={{ width: 9, height: 9, borderRadius: "50%", background: c.dot }} />
           <Txt c="#FFFFFF" s={16} w={600}>{c.text}</Txt>
         </div>
       ))}
-
-      {/* floor shadow follows the device */}
-      <div style={{ position: "absolute", left: "50%", top: 540 + 470 * pose.scale, width: 1500 * pose.scale, height: 70, transform: `translate(-50%, -50%) translateX(${pose.rotY * 6}px)`, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(15,23,41,0.3), rgba(15,23,41,0))", opacity: intro }} />
-
-      <AbsoluteFill style={{ perspective: 2600, perspectiveOrigin: "50% 45%", alignItems: "center", justifyContent: "center" }}>
-        <div
-          style={{
-            width: APP_W + 72,
-            height: APP_H + 72,
-            padding: 36,
-            boxSizing: "border-box",
-            borderRadius: 64,
-            background: "linear-gradient(145deg, #2B2E35 0%, #111317 55%, #1B1D22 100%)",
-            boxShadow: "inset 0 0 0 2px rgba(255,255,255,0.09), inset 0 0 0 9px #0A0B0D, 0 60px 120px rgba(15,23,41,0.25)",
-            transform: `translateY(${pose.floatY + (1 - intro) * 90}px) scale(${pose.scale}) rotateX(${pose.rotX}deg) rotateY(${pose.rotY}deg) rotateZ(${pose.rotZ}deg)`,
-            opacity: intro,
-            position: "relative",
-            willChange: "transform",
-          }}
-        >
-          <div style={{ position: "absolute", top: 15, left: "50%", width: 8, height: 8, marginLeft: -4, borderRadius: 4, background: "#2A2D33", boxShadow: "inset 0 0 0 2px #0A0B0D" }} />
-
-          <div style={{ position: "relative", width: APP_W, height: APP_H, borderRadius: 28, overflow: "hidden", background: canvasBg }}>
-            <AbsoluteFill style={{ backgroundImage: "radial-gradient(#D5D8DD 1.3px, transparent 1.3px)", backgroundSize: "24px 24px", opacity: (1 - m) * (1 - e) }} />
-            <Txt c="#8C8C8C" s={12.5} style={{ position: "absolute", left: frameLeft, top: frameTop - 22, opacity: (1 - m) * (1 - e) }}>Global Footprint — Desktop 1920</Txt>
-
-            {/* the design */}
-            <div style={{ position: "absolute", left: frameLeft, top: frameTop, width: 1920, height: 1080, transform: `scale(${scale})`, transformOrigin: "0 0", boxShadow: `0 ${12 / scale}px ${40 / scale}px rgba(0,0,0,${0.12 * (1 - e)})` }}>
-              <Section f={f} />
-              <div style={{ position: "absolute", left: sel.rect.x, top: sel.rect.y, width: sel.rect.w, height: sel.rect.h, border: `${2 / scale}px solid ${k.accent}`, opacity: sel.opacity, boxSizing: "border-box" }}>
-                <div style={{ position: "absolute", top: -26 / scale, left: -2 / scale, background: k.accent, padding: `${3 / scale}px ${7 / scale}px`, borderRadius: 3 / scale }}>
-                  <Txt c="#FFFFFF" s={11.5 / scale} w={600}>{sel.label}</Txt>
-                </div>
-                {[[0, 0], [1, 0], [0, 1], [1, 1]].map(([x, y], j) => (
-                  <div key={j} style={{ position: "absolute", left: `calc(${x * 100}% - ${4 / scale}px)`, top: `calc(${y * 100}% - ${4 / scale}px)`, width: 8 / scale, height: 8 / scale, background: "#FFFFFF", border: `${1.5 / scale}px solid ${k.accent}`, boxSizing: "border-box", opacity: 1 - m }} />
-                ))}
-              </div>
-            </div>
-
-            {/* editor shell, slides away at the end */}
-            <div style={{ position: "absolute", left: 0, top: 0, width: APP_W, height: TOP, transform: `translateY(${-TOP * 1.1 * e}px)` }}>
-              <TopBar k={k} m={m} />
-            </div>
-            <div style={{ position: "absolute", left: 0, top: TOP, width: SIDE, height: APP_H - TOP, transform: `translateX(${-SIDE * 1.05 * e}px)` }}>
-              <LeftPanel k={k} m={m} rowF={sel.rowFigma} rowW={sel.rowWebflow} />
-            </div>
-            <div style={{ position: "absolute", right: 0, top: TOP, width: SIDE, height: APP_H - TOP, transform: `translateX(${SIDE * 1.05 * e}px)` }}>
-              <RightPanel k={k} m={m} cls={sel.cls} />
-            </div>
-
-            <AbsoluteFill style={{ background: `linear-gradient(${115 + pose.rotY}deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 60%)`, pointerEvents: "none" }} />
-          </div>
-        </div>
-      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
